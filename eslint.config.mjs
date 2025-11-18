@@ -1,0 +1,42 @@
+import { defineConfig } from 'eslint/config'
+import { FlatCompat } from '@eslint/eslintrc'
+
+const __dirname = new URL('.', import.meta.url).pathname
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+})
+
+// https://nextjs.org/docs/app/api-reference/config/eslint#with-core-web-vitals
+export default defineConfig([
+  ...compat.config({ extends: ['next/core-web-vitals', 'next/typescript'] }),
+  {
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
+      },
+    },
+    ignores: [
+      '.tmp',
+      '**/.git',
+      '**/.hg',
+      '**/.pnp.*',
+      '**/.svn',
+      '**/.yarn/**',
+      '**/build',
+      '**/dist/**',
+      '**/node_modules',
+      '**/temp',
+      '**/docs/**',
+      'playwright.config.ts',
+      'jest.config.js',
+    ],
+    rules: {
+      /**
+       * Just ignore this rule for now during the migration of shadcnblocks
+       */
+      '@next/next/no-img-element': 'off',
+    },
+  },
+])
