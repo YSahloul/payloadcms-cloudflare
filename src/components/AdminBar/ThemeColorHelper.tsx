@@ -37,7 +37,7 @@ const r = 'radius'
 const colors = ['bg-', 'text-', 'border-', 'ring-', 'shadow-']
 
 const highlightColors = ['red', 'green', 'blue', 'purple', 'pink', 'orange']
-let highlightColorIndex = 0
+const highlightColorIndex = 0
 let popover: HTMLDivElement | null = null
 let prevHoveredElement: HTMLElement | null = null
 

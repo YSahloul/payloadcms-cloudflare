@@ -2,7 +2,7 @@ import { BeforeSync, DocToSync } from '@payloadcms/plugin-search/types'
 import { extractTextFromDocument, extractSearchKeywords } from '@/utilities/extractTextFromDocument'
 import { Page, Post } from '@/payload-types'
 
-export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc, payload }) => {
+export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc }) => {
   const {
     doc: { relationTo: collection },
   } = searchDoc
@@ -40,7 +40,7 @@ export const beforeSyncWithSearch: BeforeSync = async ({ originalDoc, searchDoc,
     return modifiedDoc
   }
   if (collection === 'posts') {
-    const { slug, id, title, meta } = originalDoc as Post
+    const { slug, title, meta } = originalDoc as Post
 
     // Extract full text content from the document for search indexing
     const extractedText = extractTextFromDocument(originalDoc, {

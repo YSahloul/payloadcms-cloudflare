@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { useField, useModal, Button, Drawer, XIcon } from '@payloadcms/ui'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { DesignVersionPreviewOptions } from './config'
 import './index.scss'
 
@@ -16,7 +16,6 @@ const DesignVersionPreviewClient: React.FC<DesignVersionPreviewProps> = ({
 }) => {
   const { setValue, value } = useField<string>({ path })
   const [imageLoadErrors, setImageLoadErrors] = useState<Record<string, boolean>>({})
-  const [imagePaths, setImagePaths] = useState<Record<string, string>>({})
 
   // Use the useModal hook instead of local state
   const { toggleModal } = useModal()
@@ -27,9 +26,8 @@ const DesignVersionPreviewClient: React.FC<DesignVersionPreviewProps> = ({
     return Array.isArray(options) ? options : []
   }, [options])
 
-  // Load images when component mounts
-  useEffect(() => {
-    // Create a mapping of design version values to their image paths
+  // Create a mapping of design version values to their image paths derived from options
+  const imagePaths = useMemo(() => {
     const paths: Record<string, string> = {}
 
     safeOptions.forEach((option) => {
@@ -39,7 +37,7 @@ const DesignVersionPreviewClient: React.FC<DesignVersionPreviewProps> = ({
       }
     })
 
-    setImagePaths(paths)
+    return paths
   }, [safeOptions])
 
   const handleSelectVersion = (version: string) => {

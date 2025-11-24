@@ -1,5 +1,4 @@
-import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react'
-import * as lucide from 'lucide-react'
+import { Menu } from 'lucide-react'
 import type { Header as HeaderType } from '@/payload-types'
 
 import {

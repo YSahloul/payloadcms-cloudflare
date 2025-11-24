@@ -4,7 +4,6 @@ import AutoScroll from 'embla-carousel-auto-scroll'
 import {
   Globe,
   MessagesSquare,
-  MoveRight,
   PanelsTopLeft,
   PenTool,
   ScissorsLineDashed,

@@ -21,20 +21,32 @@ import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { Locale, localization } from '@/localization.config'
 
-const translations: Record<
-  Locale,
-  {
-    placeholder: string
-    esc: string
-    searching: string
-    noResults: string
-    startTyping: string
-    recentItems: string
-    recentResults: string
-    foundResults: (count: number) => string
-    search: string
-  }
-> = {
+type SearchTranslations = {
+  placeholder: string
+  esc: string
+  searching: string
+  noResults: string
+  startTyping: string
+  recentItems: string
+  recentResults: string
+  foundResults: (count: number) => string
+  search: string
+}
+
+type SearchCategory = {
+  title: string
+}
+
+type SearchResult = {
+  id: string
+  url: string
+  title: string
+  description?: string | null
+  type: string
+  categories?: SearchCategory[] | null
+}
+
+const translations: Record<Locale, SearchTranslations> = {
   en: {
     placeholder: 'What are you searching for?',
     esc: 'Esc',
@@ -57,6 +69,110 @@ const translations: Record<
     foundResults: (count) => `${count} Ergebnis${count !== 1 ? 'se' : ''} gefunden`,
     search: 'Suchen',
   },
+}
+
+function SearchList({
+  value,
+  setValue,
+  t,
+  isLoading,
+  debouncedValue,
+  displayResults,
+  cachedResults,
+  results,
+  handleSelect,
+  setOpen,
+}: {
+  value: string
+  setValue: React.Dispatch<React.SetStateAction<string>>
+  t: SearchTranslations
+  isLoading: boolean
+  debouncedValue: string
+  displayResults: SearchResult[]
+  cachedResults: SearchResult[]
+  results: SearchResult[]
+  handleSelect: (url: string) => void
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+  return (
+    <>
+      <div className="flex items-center border-b px-3 py-2">
+        <Input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={t.placeholder}
+          className="border-0 text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+          autoFocus
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setOpen(false)}
+          className="ml-2 hidden h-7 rounded border px-2 text-xs lg:block"
+        >
+          {t.esc}
+        </Button>
+      </div>
+      <CommandList className="!h-[400px] !max-h-[400px]">
+        {isLoading && displayResults.length === 0 && (
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+            <span className="text-muted-foreground ml-2 text-sm">{t.searching}</span>
+          </div>
+        )}
+
+        {!isLoading && displayResults.length === 0 && debouncedValue && (
+          <CommandEmpty>{t.noResults}</CommandEmpty>
+        )}
+
+        {!debouncedValue && displayResults.length === 0 && !isLoading && (
+          <CommandEmpty>{t.startTyping}</CommandEmpty>
+        )}
+
+        {displayResults.length > 0 && (
+          <CommandGroup
+            heading={
+              !debouncedValue
+                ? t.recentItems
+                : cachedResults.length > 0 && results.length === 0
+                  ? t.recentResults
+                  : t.foundResults(displayResults.length)
+            }
+          >
+            {displayResults.map((result) => (
+              <CommandItem
+                key={result.id}
+                value={result.id}
+                onSelect={() => handleSelect(result.url)}
+                className="flex items-start gap-3"
+              >
+                <FileText className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="truncate text-sm font-medium">{result.title}</div>
+                  {result.description && (
+                    <div className="text-muted-foreground line-clamp-2 text-xs">
+                      {result.description}
+                    </div>
+                  )}
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-muted-foreground text-xs capitalize">{result.type}</span>
+                    {result.categories && result.categories.length > 0 && (
+                      <>
+                        <span className="text-muted-foreground text-xs">•</span>
+                        <span className="text-muted-foreground text-xs">
+                          {result.categories.map((cat) => cat.title).join(', ')}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+      </CommandList>
+    </>
+  )
 }
 
 export function SearchButton({
@@ -134,90 +250,6 @@ export function SearchButton({
     return results
   }, [cachedResults, results, initialResults, isLoading, debouncedValue])
 
-  const SearchList = () => {
-    return (
-      <>
-        <div className="flex items-center border-b px-3 py-2">
-          <Input
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder={t.placeholder}
-            className="border-0 text-base focus-visible:ring-0 focus-visible:ring-offset-0"
-            autoFocus
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setOpen(false)}
-            className="hidden lg:block ml-2 h-7 rounded border px-2 text-xs "
-          >
-            {t.esc}
-          </Button>
-        </div>
-        <CommandList className="!h-[400px] !max-h-[400px]">
-          {isLoading && displayResults.length === 0 && (
-            <div className="flex items-center justify-center py-6">
-              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-              <span className="text-muted-foreground ml-2 text-sm">{t.searching}</span>
-            </div>
-          )}
-
-          {!isLoading && displayResults.length === 0 && debouncedValue && (
-            <CommandEmpty>{t.noResults}</CommandEmpty>
-          )}
-
-          {!debouncedValue && displayResults.length === 0 && !isLoading && (
-            <CommandEmpty>{t.startTyping}</CommandEmpty>
-          )}
-
-          {displayResults.length > 0 && (
-            <CommandGroup
-              heading={
-                !debouncedValue
-                  ? t.recentItems
-                  : cachedResults.length > 0 && results.length === 0
-                    ? t.recentResults
-                    : t.foundResults(displayResults.length)
-              }
-            >
-              {displayResults.map((result) => (
-                <CommandItem
-                  key={result.id}
-                  value={result.id}
-                  onSelect={() => handleSelect(result.url)}
-                  className="flex items-start gap-3"
-                >
-                  <FileText className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
-                  <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <div className="truncate text-sm font-medium">{result.title}</div>
-                    {result.description && (
-                      <div className="text-muted-foreground line-clamp-2 text-xs">
-                        {result.description}
-                      </div>
-                    )}
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="text-muted-foreground text-xs capitalize">
-                        {result.type}
-                      </span>
-                      {result.categories && result.categories.length > 0 && (
-                        <>
-                          <span className="text-muted-foreground text-xs">•</span>
-                          <span className="text-muted-foreground text-xs">
-                            {result.categories.map((cat) => cat.title).join(', ')}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
-        </CommandList>
-      </>
-    )
-  }
-
   return (
     <>
       <Button
@@ -240,13 +272,35 @@ export function SearchButton({
               <SheetTitle>{t.search}</SheetTitle>
             </VisuallyHidden>
             <Command className="flex h-full flex-col overflow-hidden">
-              <SearchList />
+              <SearchList
+                value={value}
+                setValue={setValue}
+                t={t}
+                isLoading={isLoading}
+                debouncedValue={debouncedValue}
+                displayResults={displayResults}
+                cachedResults={cachedResults}
+                results={results}
+                handleSelect={handleSelect}
+                setOpen={setOpen}
+              />
             </Command>
           </SheetContent>
         </Sheet>
       ) : (
         <CommandDialog open={open} onOpenChange={setOpen}>
-          <SearchList />
+          <SearchList
+            value={value}
+            setValue={setValue}
+            t={t}
+            isLoading={isLoading}
+            debouncedValue={debouncedValue}
+            displayResults={displayResults}
+            cachedResults={cachedResults}
+            results={results}
+            handleSelect={handleSelect}
+            setOpen={setOpen}
+          />
         </CommandDialog>
       )}
     </>

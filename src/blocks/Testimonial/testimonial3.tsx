@@ -4,9 +4,6 @@ import { TestimonialBlock } from '@/payload-types'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 
 const Testimonial3: React.FC<TestimonialBlock & { publicContext: PublicContextProps }> = ({
-  headline,
-  link,
-  tagline,
   testimonial,
   publicContext,
 }) => {

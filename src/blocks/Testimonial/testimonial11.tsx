@@ -93,7 +93,7 @@ const Testimonial11: React.FC<TestimonialBlock & { publicContext: PublicContextP
                   <div className="flex items-center gap-1 md:gap-2">
                     {t?.authorAvatar && typeof t?.authorAvatar === 'object' && (
                       <Avatar key={t.id} className="size-8 md:size-10">
-                        <AvatarImage asChild src={t?.authorAvatar.url!}>
+                        <AvatarImage asChild src={t?.authorAvatar.url || ''}>
                           <Media
                             imgClassName="h-9 w-full rounded-md object-cover lg:h-auto"
                             resource={t?.authorAvatar}

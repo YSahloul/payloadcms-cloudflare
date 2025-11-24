@@ -1,5 +1,5 @@
 import localization, { locales, localeLabels } from '@/localization.config'
-import { Check, Globe, Icon } from 'lucide-react'
+import { Check, Globe } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,7 +11,6 @@ import Link from 'next/link'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { cn } from '@/utilities'
 import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
-import { CMSLink } from '../Link'
 
 export const LanguageSwitcher: React.FC<{
   publicContext: PublicContextProps

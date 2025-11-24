@@ -3,7 +3,6 @@ import type { Block, CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 
-import { Archive } from '@/blocks/ArchiveBlock/config'
 import { FormBlock } from '@/blocks/Form/config'
 import { FeatureBlock } from '@/blocks/Feature/config'
 import { CtaBlock } from '@/blocks/Cta/config'
@@ -44,7 +43,6 @@ import { SignupBlock } from '@/blocks/Signup/config'
 
 export const PageBlocks: Block[] = [
   FeatureBlock,
-  Archive,
   FormBlock,
   CtaBlock,
   LogosBlock,

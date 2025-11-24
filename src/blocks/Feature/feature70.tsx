@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowRight, ChevronDown } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import type { CarouselApi } from '@/components/ui/carousel'

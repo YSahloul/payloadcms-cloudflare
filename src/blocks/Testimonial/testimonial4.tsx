@@ -66,7 +66,7 @@ const Testimonial4: React.FC<TestimonialBlock & { publicContext: PublicContextPr
                     {testimonial[0]?.authorAvatar &&
                       typeof testimonial[0]?.authorAvatar === 'object' && (
                         <Avatar className="ring-input size-9 rounded-full ring-1">
-                          <AvatarImage asChild src={testimonial[0]?.authorAvatar.url!}>
+                          <AvatarImage asChild src={testimonial[0]?.authorAvatar?.url || ''}>
                             <Media
                               imgClassName="h-9 w-full rounded-md object-cover lg:h-auto"
                               resource={testimonial[0]?.authorAvatar}
@@ -101,7 +101,7 @@ const Testimonial4: React.FC<TestimonialBlock & { publicContext: PublicContextPr
                     {testimonial[2]?.authorAvatar &&
                       typeof testimonial[2]?.authorAvatar === 'object' && (
                         <Avatar className="ring-input size-9 rounded-full ring-1">
-                          <AvatarImage asChild src={testimonial[2]?.authorAvatar.url!}>
+                          <AvatarImage asChild src={testimonial[2]?.authorAvatar?.url || ''}>
                             <Media
                               imgClassName="h-9 w-full rounded-md object-cover lg:h-auto"
                               resource={testimonial[2]?.authorAvatar}
@@ -136,7 +136,7 @@ const Testimonial4: React.FC<TestimonialBlock & { publicContext: PublicContextPr
                     {testimonial[3]?.authorAvatar &&
                       typeof testimonial[3]?.authorAvatar === 'object' && (
                         <Avatar className="ring-input size-9 rounded-full ring-1">
-                          <AvatarImage asChild src={testimonial[3]?.authorAvatar.url!}>
+                          <AvatarImage asChild src={testimonial[3]?.authorAvatar?.url || ''}>
                             <Media
                               imgClassName="h-9 w-full rounded-md object-cover lg:h-auto"
                               resource={testimonial[3]?.authorAvatar}

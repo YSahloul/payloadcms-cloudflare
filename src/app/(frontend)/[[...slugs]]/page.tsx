@@ -5,7 +5,6 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 
-import type { Page as PageType, Post as PostType } from '@/payload-types'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
@@ -14,7 +13,7 @@ import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 import { resolveSlugs } from '@/utilities/resolveSlugs'
 import localization, { locales } from '@/localization.config'
-import { queryCollectionData, queryPageBySlug } from './data'
+import { queryCollectionData } from './data'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { Breadcrumb } from '@payloadcms/plugin-nested-docs/types'
@@ -73,7 +72,6 @@ export async function generateStaticParams(): Promise<Array<Params>> {
           slugs.push(slug)
         }
       }
-      slugs
       return { slugs }
     })
   })
@@ -96,7 +94,7 @@ export default async function Page(props: Args) {
 
   const collection = cleanSlugs[0] === 'posts' ? 'posts' : 'pages'
 
-  let page = await queryCollectionData({
+  const page = await queryCollectionData({
     cleanSlugs,
     locale,
     collection,

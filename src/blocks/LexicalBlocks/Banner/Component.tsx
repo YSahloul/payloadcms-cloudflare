@@ -6,7 +6,6 @@ import RichText from '@/components/RichText'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Icon } from '@/components/Icon'
-import { splitRichText } from '@/utilities/richtext'
 
 type Props = {
   className?: string

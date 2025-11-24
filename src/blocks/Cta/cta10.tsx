@@ -1,6 +1,5 @@
 import { CMSLink } from '@/components/Link'
 import RichText from '@/components/RichText'
-import { Button } from '@/components/ui/button'
 import { CtaBlock } from '@/payload-types'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 

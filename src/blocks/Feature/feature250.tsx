@@ -60,31 +60,31 @@ function AnimatedBeamIllustration({ image, icons }: { image: MediaType; icons: s
   // Icon block configs
   const iconBlocks = [
     {
-      ref: iconRefs[0],
+      ref: iconRef1,
       iconIdx: 0,
       className:
         'absolute top-40 left-0 z-10 flex size-18 -translate-y-1/2 items-center justify-center rounded-full bg-background p-1 lg:top-1/2 lg:left-0',
     },
     {
-      ref: iconRefs[1],
+      ref: iconRef2,
       iconIdx: 1,
       className:
         'absolute top-40 right-0 z-10 flex size-18 -translate-y-1/2 items-center justify-center rounded-full bg-background p-1 lg:top-20 lg:left-20',
     },
     {
-      ref: iconRefs[2],
+      ref: iconRef3,
       iconIdx: 2,
       className:
         'absolute bottom-0 left-6 z-10 flex size-18 -translate-y-1/2 items-center justify-center rounded-full bg-background p-1 lg:bottom-2 lg:left-20',
     },
     {
-      ref: iconRefs[3],
+      ref: iconRef4,
       iconIdx: 3,
       className:
         'absolute right-6 bottom-0 z-10 flex size-18 -translate-y-1/2 items-center justify-center rounded-full bg-background p-1 lg:top-0 lg:left-50',
     },
     {
-      ref: iconRefs[4],
+      ref: iconRef5,
       iconIdx: 4,
       className:
         'absolute top-20 z-10 flex size-18 -translate-y-1/2 items-center justify-center rounded-full bg-background p-1 lg:top-100 lg:left-50',
@@ -94,31 +94,31 @@ function AnimatedBeamIllustration({ image, icons }: { image: MediaType; icons: s
   // AnimatedBeam configs for mobile and desktop
   const mobileBeams = [
     {
-      from: iconRefs[0],
+      from: iconRef1,
       to: div6Ref,
       props: { endYOffset: -60, endXOffset: -10, curvature: 10 },
     },
     {
-      from: iconRefs[1],
+      from: iconRef2,
       to: div6Ref,
       props: { endYOffset: -60, endXOffset: 10, curvature: 10 },
     },
-    { from: iconRefs[2], to: div6Ref },
-    { from: iconRefs[3], to: div6Ref },
-    { from: iconRefs[4], to: div7Ref },
+    { from: iconRef3, to: div6Ref },
+    { from: iconRef4, to: div6Ref },
+    { from: iconRef5, to: div7Ref },
     { from: div6Ref, to: div7Ref },
   ]
 
   const desktopBeams = [
-    { from: iconRefs[0], to: div6Ref, props: {} },
-    { from: iconRefs[1], to: div6Ref, props: { endYOffset: -30, endXOffset: 60, curvature: -140 } },
-    { from: iconRefs[2], to: div6Ref, props: { endYOffset: 30, curvature: 140 } },
+    { from: iconRef1, to: div6Ref, props: {} },
+    { from: iconRef2, to: div6Ref, props: { endYOffset: -30, endXOffset: 60, curvature: -140 } },
+    { from: iconRef3, to: div6Ref, props: { endYOffset: 30, curvature: 140 } },
     {
-      from: iconRefs[3],
+      from: iconRef4,
       to: div6Ref,
       props: { endYOffset: -30, endXOffset: -60, curvature: -180 },
     },
-    { from: iconRefs[4], to: div6Ref, props: { endXOffset: -60, endYOffset: 30, curvature: 180 } },
+    { from: iconRef5, to: div6Ref, props: { endXOffset: -60, endYOffset: 30, curvature: 180 } },
     { from: div6Ref, to: div7Ref, props: {} },
   ]
 

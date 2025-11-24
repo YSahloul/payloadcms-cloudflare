@@ -1,6 +1,6 @@
 import { Login3 } from '@/blocks/Login/Login3'
 import { PublicContextProps } from '@/utilities/publicContextProps'
-import { LoginDesignVersion, allLoginDesignVersions } from './config'
+import { LoginDesignVersion } from './config'
 
 // Extract just the value property from LoginDesignVersion for use as keys
 type LoginDesignVersionValue = LoginDesignVersion['value']

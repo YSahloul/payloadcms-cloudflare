@@ -159,7 +159,7 @@ export const TestimonialBlock: Block = {
                 'TESTIMONIAL19',
               ].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
         },
@@ -180,7 +180,7 @@ export const TestimonialBlock: Block = {
                 'TESTIMONIAL19',
               ].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
         },
@@ -204,7 +204,7 @@ export const TestimonialBlock: Block = {
                 'TESTIMONIAL19',
               ].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
         },
@@ -216,7 +216,7 @@ export const TestimonialBlock: Block = {
             condition: (parent: Page, { id }) =>
               ['TESTIMONIAL3', 'TESTIMONIAL17'].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
         },
@@ -229,7 +229,7 @@ export const TestimonialBlock: Block = {
             condition: (parent: Page, { id }) =>
               ['TESTIMONIAL18', 'TESTIMONIAL19'].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
         },
@@ -252,7 +252,7 @@ export const TestimonialBlock: Block = {
                 'TESTIMONIAL19',
               ].includes(
                 parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                  ?.designVersion!,
+                  ?.designVersion ?? '',
               ),
           },
           editor: lexicalEditor({
@@ -268,7 +268,7 @@ export const TestimonialBlock: Block = {
               condition: (parent: Page, { id }) =>
                 ['TESTIMONIAL19'].includes(
                   parentLayoutCondition<TestimonialBlockType>(parent, id, 'testimonial')
-                    ?.designVersion!,
+                    ?.designVersion || '',
                 ),
             },
           },

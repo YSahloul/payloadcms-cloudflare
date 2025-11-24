@@ -1,9 +1,8 @@
 'use client'
 
-import { Clock, Facebook, Home, Lightbulb, Linkedin, Twitter } from 'lucide-react'
+import { Clock, Facebook, Home, Linkedin, Twitter } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { DateFormatter } from '@/components/DateFormatter'
 import RichText from '@/components/RichText'
 import { Media } from '@/components/Media'

@@ -16,40 +16,40 @@ const initialContext: ThemeContextType = {
 const ThemeContext = createContext(initialContext)
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setThemeState] = useState<Theme | undefined>(
-    canUseDOM ? (document.documentElement.getAttribute('data-theme') as Theme) : undefined,
-  )
+  const [theme, setThemeState] = useState<Theme | undefined>(() => {
+    if (!canUseDOM) return undefined
+
+    const storedPreference = window.localStorage.getItem(themeLocalStorageKey)
+    if (themeIsValid(storedPreference)) {
+      return storedPreference
+    }
+
+    const implicitPreference = getImplicitPreference()
+    if (implicitPreference) {
+      return implicitPreference
+    }
+
+    return defaultTheme
+  })
 
   const setTheme = useCallback((themeToSet: Theme | null) => {
+    if (!canUseDOM) return
+
     if (themeToSet === null) {
       window.localStorage.removeItem(themeLocalStorageKey)
       const implicitPreference = getImplicitPreference()
-      document.documentElement.setAttribute('data-theme', implicitPreference || '')
-      if (implicitPreference) setThemeState(implicitPreference)
+      setThemeState(implicitPreference || defaultTheme)
     } else {
       setThemeState(themeToSet)
       window.localStorage.setItem(themeLocalStorageKey, themeToSet)
-      document.documentElement.setAttribute('data-theme', themeToSet)
     }
   }, [])
 
   useEffect(() => {
-    let themeToSet: Theme = defaultTheme
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
+    if (!canUseDOM || !theme) return
 
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
-      const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
-    }
-
-    document.documentElement.setAttribute('data-theme', themeToSet)
-    setThemeState(themeToSet)
-  }, [])
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   return <ThemeContext.Provider value={{ setTheme, theme }}>{children}</ThemeContext.Provider>
 }

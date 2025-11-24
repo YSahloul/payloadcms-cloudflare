@@ -1,5 +1,5 @@
 import type { Field, Block } from 'payload'
-import { link, LinkAppearances } from '@/fields/link'
+import { link } from '@/fields/link'
 import { icon } from '@/components/Icon/config'
 
 // Block types for navigation submenus (only for navbar4)

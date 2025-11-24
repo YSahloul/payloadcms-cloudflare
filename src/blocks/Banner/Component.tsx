@@ -1,4 +1,4 @@
-import { BannerDesignVersion, allBannerDesignVersions } from './config'
+import { BannerDesignVersion } from './config'
 import Banner5 from './banner5'
 import Banner1 from './banner1'
 

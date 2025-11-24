@@ -1,34 +1,41 @@
-// @ts-nocheck
-
 /**
  * Simple object check.
  * @param item
  * @returns {boolean}
  */
-export function isObject(item: unknown): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item)
+export function isObject(item: unknown): item is Record<string | number | symbol, unknown> {
+  return !!item && typeof item === 'object' && !Array.isArray(item)
 }
 
 /**
  * Deep merge two objects.
  * @param target
- * @param ...sources
+ * @param source
  */
-export default function deepMerge<T, R>(target: T, source: R): T {
-  const output = { ...target }
+export default function deepMerge<
+  T extends Record<string | number | symbol, unknown>,
+  R extends Record<string | number | symbol, unknown>,
+>(target: T, source: R): T & R {
+  const output: Record<string | number | symbol, unknown> = { ...target }
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
-      if (isObject(source[key])) {
-        if (!(key in target)) {
-          Object.assign(output, { [key]: source[key] })
+      const typedKey = key as keyof typeof source
+      const sourceValue = source[typedKey]
+
+      if (isObject(sourceValue)) {
+        if (!(typedKey in target)) {
+          output[typedKey] = sourceValue
         } else {
-          output[key] = deepMerge(target[key], source[key])
+          const targetValue = target[typedKey]
+          output[typedKey] = isObject(targetValue)
+            ? deepMerge(targetValue, sourceValue)
+            : sourceValue
         }
       } else {
-        Object.assign(output, { [key]: source[key] })
+        output[typedKey] = sourceValue
       }
     })
   }
 
-  return output
+  return output as T & R
 }

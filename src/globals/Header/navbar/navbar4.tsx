@@ -17,7 +17,7 @@ import { CMSLink } from '@/components/Link'
 import { Icon } from '@/components/Icon'
 import { SearchButton } from '@/search/Component'
 import { PublicContextProps } from '@/utilities/publicContextProps'
-import { BlockRenderer, NavSubmenuBlock } from './blocks'
+import { BlockRenderer } from './blocks'
 
 const Navbar4: React.FC<{ header: HeaderType; publicContext: PublicContextProps }> = ({
   header,

@@ -10,7 +10,7 @@ type IconType = (overrides?: RecursivePartial<TextField>) => TextField
  * @returns
  */
 export const icon: IconType = (overrides) => ({
-  // @ts-ignore - We want these properties to be overwritten by the spread
+  // @ts-expect-error - We want these properties to be overwritten by the spread
   name: 'icon',
   ...(overrides as TextField),
   type: 'text',

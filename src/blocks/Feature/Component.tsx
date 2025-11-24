@@ -104,7 +104,7 @@ import Feature159 from '@/blocks/Feature/feature159'
 import Feature250 from '@/blocks/Feature/feature250'
 
 import { Page } from '@/payload-types'
-import { FeatureDesignVersion, allFeatureDesignVersions } from './config'
+import { FeatureDesignVersion } from './config'
 
 // Extract just the value property from FeatureDesignVersion for use as keys
 type FeatureDesignVersionValue = FeatureDesignVersion['value']

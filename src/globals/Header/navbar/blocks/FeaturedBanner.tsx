@@ -2,7 +2,6 @@
 
 import { ArrowRight } from 'lucide-react'
 import { Media } from '@/components/Media'
-import { CMSLink } from '@/components/Link'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { cn } from '@/utilities/cn'
 import { Media as MediaType } from '@/payload-types'

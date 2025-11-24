@@ -1,4 +1,3 @@
-import { BarChart, Heart, Monitor, Plus, TrendingUp } from 'lucide-react'
 
 import { FeatureBlock } from '@/payload-types'
 import RichText from '@/components/RichText'

@@ -4,8 +4,6 @@ import { motion } from 'framer-motion'
 import React from 'react'
 
 import { CMSLink } from '@/components/Link'
-import { Media } from '@/components/Media'
-import RichText from '@/components/RichText'
 import { VideoText } from '@/components/magicui/video-text'
 import { Page } from '@/payload-types'
 import { PublicContextProps } from '@/utilities/publicContextProps'

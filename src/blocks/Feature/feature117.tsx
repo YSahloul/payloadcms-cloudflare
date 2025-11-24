@@ -2,7 +2,7 @@ import { Icon } from '@/components/Icon'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { FeatureBlock } from '@/payload-types'
-import { ChevronRight, Zap } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 
 const Feature117: React.FC<FeatureBlock & { publicContext: PublicContextProps }> = ({

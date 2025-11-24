@@ -26,8 +26,10 @@ const Testimonial17: React.FC<TestimonialBlock & { publicContext: PublicContextP
       return
     }
 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
+    setTimeout(() => {
+      setCount(api.scrollSnapList().length)
+      setCurrent(api.selectedScrollSnap() + 1)
+    }, 0)
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1)

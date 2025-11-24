@@ -8,7 +8,6 @@ import {
   Facebook,
   Home,
   Instagram,
-  Lightbulb,
   Linkedin,
   Twitter,
 } from 'lucide-react'

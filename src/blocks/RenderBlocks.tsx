@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 
 import type { Page } from '@/payload-types'
 
-import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { FeatureBlock } from '@/blocks/Feature/Component'
 import { GalleryBlock } from './Gallery/Component'
@@ -27,7 +26,6 @@ import { LoginBlock } from './Login/Component'
 import { SignupBlock } from './Signup/Component'
 
 const blockComponents: Partial<Record<Page['layout'][0]['blockType'], React.FC<any>>> = {
-  archive: ArchiveBlock,
   formBlock: FormBlock,
   feature: FeatureBlock,
   gallery: GalleryBlock,

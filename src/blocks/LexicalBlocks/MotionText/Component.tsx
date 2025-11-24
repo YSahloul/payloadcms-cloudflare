@@ -28,7 +28,7 @@ export const MotionTextBlock: React.FC<Props & { publicContext: PublicContextPro
 
   const textTag = textLevel || 'h1'
   const textStyles = overrideStyles?.[textTag] || ''
-  
+
   return createElement(
     textTag,
     { className: cn('inline-block', className, textStyles) },
@@ -57,14 +57,12 @@ export const MotionTextBlock: React.FC<Props & { publicContext: PublicContextPro
             }}
             transition={{
               delay: i * (animationDelay || 0.08) + 0.1,
-              duration: animationDuration,
+              duration: animationDuration || undefined,
               ease: [0.215, 0.61, 0.355, 1],
             }}
           >
             {wordData.isHighlighted ? (
-              <span className={wordData.highlightClass || 'font-playfair'}>
-                {wordData.word}
-              </span>
+              <span className={wordData.highlightClass || 'font-playfair'}>{wordData.word}</span>
             ) : (
               wordData.word
             )}
@@ -72,6 +70,6 @@ export const MotionTextBlock: React.FC<Props & { publicContext: PublicContextPro
         ))}
       </span>
       {suffix && ` ${suffix}`}
-    </>
+    </>,
   )
 }

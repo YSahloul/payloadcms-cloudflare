@@ -42,9 +42,12 @@ const createDynamicIcon = (iconName: string) => {
   return DynamicIcon
 }
 
-export const Icon: React.FC<IconProps> = ({ icon, size = 24, ...props }) => {
-  const DynamicIconComponent = createDynamicIcon(icon)
+const renderDynamicIcon = (icon: string, props: LucideProps) => {
+  const DynamicIcon = createDynamicIcon(icon)
+  return <DynamicIcon {...props} />
+}
 
+export const Icon: React.FC<IconProps> = ({ icon, size = 24, ...props }) => {
   return (
     <div
       style={{
@@ -56,7 +59,7 @@ export const Icon: React.FC<IconProps> = ({ icon, size = 24, ...props }) => {
         flexShrink: 0,
       }}
     >
-      <DynamicIconComponent size={size} {...props} />
+      {renderDynamicIcon(icon, { size, ...props })}
     </div>
   )
 }

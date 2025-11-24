@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { search, type SearchResult, type SearchResponse } from '@/actions/search'
+import { search, type SearchResult } from '@/actions/search'
 
 export type { SearchResult }
 

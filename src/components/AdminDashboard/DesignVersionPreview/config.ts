@@ -1,5 +1,5 @@
 import deepMerge from '@/utilities/deepMerge'
-import { SelectField, Field } from 'payload'
+import type { Field, SelectField } from 'payload'
 
 export type DesignVersionPreviewOptions = readonly {
   label: string
@@ -17,24 +17,26 @@ export type DesignVersionPreviewOptions = readonly {
 export const designVersionPreview = (
   options: DesignVersionPreviewOptions,
   overrides?: Partial<SelectField>,
-): Field =>
-  deepMerge(
-    {
-      type: 'select',
-      name: 'designVersion',
-      defaultValue: options[0].value,
-      required: true,
-      options: options.map(({ label, value }) => ({ label, value })),
-      admin: {
-        components: {
-          Field: {
-            path: '@/components/AdminDashboard/DesignVersionPreview',
-            serverProps: {
-              options,
-            },
+): Field => {
+  const baseField: Field = {
+    type: 'select',
+    name: 'designVersion',
+    defaultValue: options[0].value,
+    required: true,
+    options: options.map(({ label, value }) => ({ label, value })),
+    admin: {
+      components: {
+        Field: {
+          path: '@/components/AdminDashboard/DesignVersionPreview',
+          serverProps: {
+            options,
           },
         },
       },
     },
-    overrides,
-  )
+  }
+
+  if (!overrides) return baseField
+
+  return deepMerge(baseField, overrides)
+}

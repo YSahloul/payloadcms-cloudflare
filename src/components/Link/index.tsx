@@ -61,12 +61,21 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     // Prefix url with collection name if it's not the pages collection
     const relationToPrefix = reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''
     // Add remaining url path
-    const remainingPath =
-      (reference?.relationTo === 'pages' && (reference?.value as Page)?.breadcrumbs
-        ? (reference?.value as Page)?.breadcrumbs?.[
-            (reference?.value as Page)?.breadcrumbs?.length! - 1
-          ]?.url
-        : `/${reference.value.slug}`) || `/${reference.value.slug}`
+    const remainingPath = (() => {
+      if (reference?.relationTo === 'pages') {
+        const page = reference.value as Page
+        const breadcrumbs = page.breadcrumbs
+
+        if (breadcrumbs && breadcrumbs.length > 0) {
+          const lastCrumb = breadcrumbs[breadcrumbs.length - 1]
+          return lastCrumb?.url ?? `/${page.slug}`
+        }
+
+        return `/${page.slug}`
+      }
+
+      return `/${reference.value.slug}`
+    })()
     const normalizedRemainingPath = reference.value.slug === 'home' ? '' : remainingPath
     href = `${localePrefix}${relationToPrefix}${normalizedRemainingPath}`
   }

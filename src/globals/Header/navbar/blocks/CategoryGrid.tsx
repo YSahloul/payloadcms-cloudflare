@@ -3,7 +3,6 @@
 import { ArrowRight } from 'lucide-react'
 import { NavigationMenuLink } from '@/components/ui/navigation-menu'
 import { Icon } from '@/components/Icon'
-import { CMSLink } from '@/components/Link'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 
 export type CategoryGridProps = {

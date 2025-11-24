@@ -1,5 +1,4 @@
-import { listBackups, restoreBackup } from '@/components/AdminDashboard/BackupDashboard/actions'
-import { after } from 'next/server'
+import { listBackups } from '@/components/AdminDashboard/BackupDashboard/actions'
 
 export async function GET(req: Request): Promise<Response> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {

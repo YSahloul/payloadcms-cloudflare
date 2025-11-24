@@ -1,7 +1,5 @@
 import { Block } from 'payload'
 import { HeadingFeature, ParagraphFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { link } from '@/fields/link'
-import { backgroundColor } from '@/fields/color'
 import { designVersionPreview } from '@/components/AdminDashboard/DesignVersionPreview/config'
 import { linkGroup } from '@/fields/linkGroup'
 

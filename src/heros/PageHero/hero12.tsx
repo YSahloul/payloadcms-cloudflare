@@ -1,7 +1,6 @@
-import { ExternalLink } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utilities/cn'
 import { Hero } from '@/payload-types'
 import RichText from '@/components/RichText'
