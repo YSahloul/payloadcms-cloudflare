@@ -11,11 +11,11 @@ jobs:
     name: Repository dispatch
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Dispatch event
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.PAYLOAD_REPOSITORY_DISPATCH }}
           repository: ${{ secrets.REMOTE_REPOSITORY }}
