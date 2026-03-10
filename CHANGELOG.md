@@ -1,5 +1,17 @@
 # payblocks
 
+## 2.12.0
+
+### Minor Changes
+
+- d189bb2: Add autolink support and link style override to RichText serializer
+  - Added `autolink` case to handle Lexical's automatically detected links (e.g., email addresses, URLs)
+  - Extended `OverrideStyle` type to include `'a'` for customizing link styles via `overrideStyle={{ a: 'custom-class' }}`
+
+### Patch Changes
+
+- c996aad: Upgrade Next.js 15.4.8→15.4.11, Payload 3.59.1→3.76.0, React 19.2.0→19.2.4
+
 ## 2.11.0
 
 ### Minor Changes
