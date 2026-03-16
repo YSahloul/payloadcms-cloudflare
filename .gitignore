@@ -2,10 +2,8 @@ build
 dist / media
 node_modules
 .DS_Store
-.env
 .next
 .vercel
-.env.*
 
 # Payload default media upload directory
 public/media/
@@ -14,3 +12,4 @@ tsconfig.tsbuildinfo
 
 dump
 src/payload-types.ts
+config.bat
