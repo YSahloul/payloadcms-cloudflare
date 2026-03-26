@@ -1,5 +1,12 @@
 # payblocks
 
+## 2.12.1
+
+### Patch Changes
+
+- f9802fa: Upgrade Payload dependencies to v3.79.0 and enable the new `@payloadcms/typescript-plugin`.
+- f9802fa: Upgrade payload to 3.80.0
+
 ## 2.12.0
 
 ### Minor Changes
