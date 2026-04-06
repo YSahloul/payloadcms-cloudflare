@@ -53,16 +53,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies (no lifecycle scripts)
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Verify source file integrity after install
+        run: |
+          echo "Checking for unexpected source file modifications after pnpm install..."
+          MODIFIED=$(git diff --name-only -- '*.js' '*.ts' '*.tsx' '*.jsx' '*.mjs' '*.cjs' '*.json' '*.md' ':!pnpm-lock.yaml')
+          if [ -n "$MODIFIED" ]; then
+            echo "::error::SECURITY ALERT: Source files were modified after pnpm install!"
+            echo "Modified files:"
+            echo "$MODIFIED"
+            echo ""
+            echo "Diff:"
+            git diff -- '*.js' '*.ts' '*.tsx' '*.jsx' '*.mjs' '*.cjs'
+            exit 1
+          fi
+          echo "All source files are clean."
 
       - name: Create release PR
-        uses: changesets/action@v1
+        uses: changesets/action@v1.7.0
         id: changesets
         with:
           version: pnpm changeset version
-          commit: 'chore(release): version packages'
-          title: 'chore: release new version'
+          commit: "chore(release): version packages"
+          title: "chore: release new version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
