@@ -1,5 +1,11 @@
 # payblocks
 
+## 2.12.2
+
+### Patch Changes
+
+- f6823d2: Security fix: remove injected malware from postcss.config.js that was introduced via a supply chain attack during pnpm install in GitHub Actions (PR #266). The malicious code was hidden after hundreds of whitespace characters on the same line as legitimate code.
+
 ## 2.12.1
 
 ### Patch Changes
