@@ -3,13 +3,15 @@ name: Cleanup Demo Environment
 on:
   schedule:
     # Run at 12:00 and 00:00 UTC
-    - cron: '0 0,12 * * *'
+    - cron: "0 0,12 * * *"
   # Allow manual triggering for testing
   workflow_dispatch:
 
 jobs:
   cleanup-demo:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
