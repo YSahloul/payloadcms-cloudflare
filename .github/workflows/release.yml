@@ -12,6 +12,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      npm_config_ignore_scripts: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,7 +42,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -72,7 +74,7 @@ jobs:
           echo "All source files are clean."
 
       - name: Create release PR
-        uses: changesets/action@v1.7.0
+        uses: changesets/action@c8bada60f408975afd1a20b3db81d6eee6789308 # v1.4.9
         id: changesets
         with:
           version: pnpm changeset version
@@ -80,6 +82,33 @@ jobs:
           title: "chore: release new version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post-action integrity check (strict allowlist)
+        run: |
+          echo "Verifying only expected files were modified by changesets action..."
+          CHANGED=$(git diff --name-only)
+          UNAUTHORIZED=""
+          for file in $CHANGED; do
+            case "$file" in
+              .changeset/*|CHANGELOG.md|package.json|pnpm-lock.yaml)
+                echo "  ✓ allowed: $file"
+                ;;
+              *)
+                echo "  ✗ UNAUTHORIZED: $file"
+                UNAUTHORIZED="$UNAUTHORIZED $file"
+                ;;
+            esac
+          done
+          if [ -n "$UNAUTHORIZED" ]; then
+            echo "::error::SECURITY ALERT: Unexpected files modified during release process!"
+            echo "Unauthorized changes:"
+            for f in $UNAUTHORIZED; do
+              echo "--- $f ---"
+              git diff -- "$f"
+            done
+            exit 1
+          fi
+          echo "All modified files are within the expected allowlist."
 
       - name: Detect if `package.json` version changed
         id: version_check
