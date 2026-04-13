@@ -74,7 +74,7 @@ jobs:
           echo "All source files are clean."
 
       - name: Create release PR
-        uses: changesets/action@c8bada60f408975afd1a20b3db81d6eee6789308 # v1.4.9
+        uses: changesets/action@v1.7.0
         id: changesets
         with:
           version: pnpm changeset version
