@@ -1,0 +1,43 @@
+---
+const { media, caption } = Astro.props
+
+const src =
+  typeof media?.url === 'string'
+    ? media.url
+    : typeof media?.filename === 'string'
+      ? `/api/media/file/${media.filename}`
+      : ''
+
+const width = media?.width
+const height = media?.height
+const mimeType = media?.mimeType || ''
+const alt = media?.alt || ''
+---
+
+{
+  src && (
+    <figure>
+      {mimeType.startsWith('image/') ? (
+        <img
+          src={src}
+          alt={alt}
+          class="w-full rounded-lg"
+          loading="lazy"
+          width={width}
+          height={height}
+        />
+      ) : mimeType.startsWith('video/') ? (
+        <video src={src} controls class="w-full rounded-lg" />
+      ) : (
+        <a href={src} download class="text-primary underline">
+          {media?.filename || 'Download'}
+        </a>
+      )}
+      {caption && (
+        <figcaption class="mt-2 text-sm text-muted-foreground text-center">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}

@@ -5,11 +5,11 @@ export const checkRole = (allRoles: string[] = [], user?: User | null): boolean 
 
   const userRoles = user.roles
     .map((role) => {
-      if (typeof role === 'string') {
-        return role
+      if (typeof role === 'string' || typeof role === 'number') {
+        return String(role)
       }
       // Handle both direct slug access and relationship format
-      return role.slug || role
+      return (role as any).slug || String(role)
     })
     .filter(Boolean)
 

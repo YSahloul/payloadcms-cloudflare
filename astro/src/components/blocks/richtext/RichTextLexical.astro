@@ -1,0 +1,18 @@
+---
+/**
+ * Render Payload Lexical rich text as HTML inside Astro.
+ * Serializes the JSON node tree server-side.
+ */
+import { serializeLexical } from '../../../lib/lexical'
+import type { LexicalNode } from './types'
+
+interface Props {
+  nodes: LexicalNode[]
+  overrideStyle?: Record<string, string>
+}
+
+const { nodes, overrideStyle } = Astro.props
+const html = serializeLexical(nodes, overrideStyle)
+---
+
+<Fragment set:html={html} />

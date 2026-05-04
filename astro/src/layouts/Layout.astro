@@ -1,0 +1,127 @@
+---
+import '../styles/globals.css'
+
+interface Props {
+  title?: string
+  description?: string
+  noIndex?: boolean
+  ogImage?: string
+  themeConfig?: any
+}
+
+const {
+  title = 'Payblocks',
+  description = '',
+  noIndex = false,
+  ogImage,
+  themeConfig,
+} = Astro.props
+
+const origin = new URL(Astro.request.url).origin
+
+const regular = themeConfig?.regularColors
+const dark = themeConfig?.darkmodeColors
+
+const themeStyle = regular
+  ? `:root {
+  --radius: ${themeConfig.radius ?? '0.5rem'};
+
+  --background: ${regular.background ?? 'hsl(0, 0%, 100%)'};
+  --foreground: ${regular.foreground ?? 'hsl(222.2, 84%, 4.9%)'};
+  --card: ${regular.card ?? 'hsl(240, 5%, 96%)'};
+  --card-foreground: ${regular['card-foreground'] ?? 'hsl(222.2, 84%, 4.9%)'};
+
+  --popover: ${regular.popover ?? 'hsl(0, 0%, 100%)'};
+  --popover-foreground: ${regular['popover-foreground'] ?? 'hsl(222.2, 84%, 4.9%)'};
+
+  --primary: ${regular.primary ?? 'hsl(222.2, 47.4%, 11.2%)'};
+  --primary-foreground: ${regular['primary-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --secondary: ${regular.secondary ?? 'hsl(210, 40%, 96.1%)'};
+  --secondary-foreground: ${regular['secondary-foreground'] ?? 'hsl(222.2, 47.4%, 11.2%)'};
+
+  --muted: ${regular.muted ?? 'hsl(210, 40%, 96.1%)'};
+  --muted-foreground: ${regular['muted-foreground'] ?? 'hsl(215.4, 16.3%, 46.9%)'};
+
+  --accent: ${regular.accent ?? 'hsl(210, 40%, 96.1%)'};
+  --accent-foreground: ${regular['accent-foreground'] ?? 'hsl(222.2, 47.4%, 11.2%)'};
+
+  --destructive: ${regular.destructive ?? 'hsl(0, 84.2%, 60.2%)'};
+  --destructive-foreground: ${regular['destructive-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --border: ${regular.border ?? 'hsl(240, 6%, 90%)'};
+  --input: ${regular.input ?? 'hsl(214.3, 31.8%, 91.4%)'};
+  --ring: ${regular['ring-3'] ?? 'hsl(222.2, 84%, 4.9%)'};
+
+  --success: ${regular.success ?? 'hsl(196, 52%, 74%)'};
+  --warning: ${regular.warning ?? 'hsl(34, 89%, 85%)'};
+  --error: ${regular.error ?? 'hsl(10, 100%, 86%)'};
+
+  --chart-1: ${regular['chart-1'] ?? 'hsl(12, 76%, 61%)'};
+  --chart-2: ${regular['chart-2'] ?? 'hsl(173, 58%, 39%)'};
+  --chart-3: ${regular['chart-3'] ?? 'hsl(197, 37%, 24%)'};
+  --chart-4: ${regular['chart-4'] ?? 'hsl(43, 74%, 66%)'};
+  --chart-5: ${regular['chart-5'] ?? 'hsl(27, 87%, 67%)'};
+
+  --muted2: ${regular.muted2 ?? 'hsl(0, 0%, 91%)'};
+  --muted2-foreground: ${regular['muted2-foreground'] ?? 'hsl(240, 3.8%, 46.1%)'};
+}` +
+    (dark?.enableDarkMode
+      ? `
+
+[data-theme='dark'] {
+  --background: ${dark.background ?? 'hsl(0, 0%, 0%)'};
+  --foreground: ${dark.foreground ?? 'hsl(210, 40%, 98%)'};
+  --card: ${dark.card ?? 'hsl(240, 6%, 10%)'};
+  --card-foreground: ${dark['card-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --popover: ${dark.popover ?? 'hsl(222.2 84%, 4.9%)'};
+  --popover-foreground: ${dark['popover-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --primary: ${dark.primary ?? 'hsl(210, 40%, 98%)'};
+  --primary-foreground: ${dark['primary-foreground'] ?? 'hsl(222.2 47.4%, 11.2%)'};
+
+  --secondary: ${dark.secondary ?? 'hsl(217.2 32.6%, 17.5%)'};
+  --secondary-foreground: ${dark['secondary-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --muted: ${dark.muted ?? 'hsl(217.2 32.6%, 17.5%)'};
+  --muted-foreground: ${dark['muted-foreground'] ?? 'hsl(215, 20.2%, 65.1%)'};
+
+  --accent: ${dark.accent ?? 'hsl(217.2 32.6%, 17.5%)'};
+  --accent-foreground: ${dark['accent-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --destructive: ${dark.destructive ?? 'hsl(0, 62.8%, 30.6%)'};
+  --destructive-foreground: ${dark['destructive-foreground'] ?? 'hsl(210, 40%, 98%)'};
+
+  --border: ${dark.border ?? 'hsl(240, 4%, 16%)'};
+  --input: ${dark.input ?? 'hsl(217.2 32.6%, 17.5%)'};
+  --ring: ${dark['ring-3'] ?? 'hsl(212.7 26.8%, 83.9%)'};
+
+  --success: ${dark.success ?? 'hsl(196, 100%, 14%)'};
+  --warning: ${dark.warning ?? 'hsl(34, 51%, 25%)'};
+  --error: ${dark.error ?? 'hsl(10, 39%, 43%)'};
+}`
+      : '')
+  : ''
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.request.url} />
+    <link rel="icon" href="/favicon.ico" />
+    {themeStyle && <style id="theme-config" set:html={themeStyle} />}
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    <slot />
+  </body>
+</html>

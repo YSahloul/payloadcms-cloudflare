@@ -56,5 +56,6 @@
   "prettier.trailingComma": "all",
   "prettier.printWidth": 100,
   "prettier.semi": false,
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "files.exclude": {}
 }

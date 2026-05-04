@@ -1,0 +1,24 @@
+---
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+
+const { heading, entries } = Astro.props
+---
+
+<div class="mx-auto max-w-2xl">
+  {heading && <h2 class="text-2xl md:text-3xl font-bold mb-8">{heading}</h2>}
+  <div class="space-y-8">
+    {entries?.map((entry: any) => (
+      <div class="border-l-2 border-primary pl-4">
+        <div class="flex items-baseline gap-2">
+          <span class="font-mono text-sm font-bold">{entry.version}</span>
+          <span class="text-sm text-muted-foreground">{entry.date}</span>
+        </div>
+        {entry.content?.root?.children?.length > 0 && (
+          <div class="mt-2">
+            <RichTextLexical nodes={entry.content.root.children} />
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>

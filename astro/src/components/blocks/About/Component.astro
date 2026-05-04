@@ -1,0 +1,225 @@
+---
+/**
+ * About Block — closer parity with enabled Payblocks ABOUT3 / ABOUT4 variants.
+ * Source of truth:
+ *   - src/blocks/About/about3.tsx
+ *   - src/blocks/About/about4.tsx
+ *
+ * Content only — wrapped by SectionShell.
+ */
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+import { resolveLinkUrl, buildButtonClasses } from '../../../lib/styles'
+
+const { designVersion, headline, text1, text2, text3, counter, images, link, logos } = Astro.props
+const variant = designVersion || 'ABOUT4'
+
+function nodes(field: any) {
+  return field?.root?.children || []
+}
+
+function imageUrl(image: any) {
+  return typeof image === 'object' && image?.url ? image.url : null
+}
+
+function imageAlt(image: any) {
+  return typeof image === 'object' ? image?.alt || '' : ''
+}
+---
+
+{/* ABOUT3 — media grid + logos + counter card */}
+{
+  variant === 'ABOUT3' && (
+    <div>
+      <div class="mb-14 grid gap-5 text-center md:grid-cols-2 md:text-left">
+        {nodes(headline).length > 0 && (
+          <RichTextLexical
+            nodes={nodes(headline)}
+            overrideStyle={{
+              h1: 'text-5xl font-semibold',
+              h2: 'text-3xl font-semibold',
+              h3: 'text-2xl font-semibold',
+              p: 'text-xl font-medium text-muted-foreground',
+            }}
+          />
+        )}
+      </div>
+
+      <div class="grid gap-7 lg:grid-cols-3">
+        {imageUrl(images?.[0]) ? (
+          <img
+            src={imageUrl(images[0])}
+            alt={imageAlt(images[0])}
+            class="size-full max-h-[620px] rounded-xl object-cover lg:col-span-2"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div class="size-full min-h-[420px] rounded-xl bg-muted lg:col-span-2" />
+        )}
+        <div class="flex flex-col gap-7 md:flex-row lg:flex-col">
+          <div class="bg-muted flex flex-col justify-between gap-6 rounded-xl p-7 md:w-1/2 lg:w-auto">
+            {imageUrl(images?.[1]) && (
+              <img src={imageUrl(images[1])} alt={imageAlt(images[1])} class="mr-auto h-12" loading="lazy" />
+            )}
+            <div>
+              {nodes(text1).length > 0 && (
+                <RichTextLexical
+                  nodes={nodes(text1)}
+                  overrideStyle={{
+                    h2: 'mb-2 text-2xl font-semibold',
+                    h3: 'mb-2 text-xl font-semibold',
+                    h4: 'mb-2 text-lg font-semibold',
+                    p: 'text-muted-foreground',
+                  }}
+                />
+              )}
+            </div>
+            {link && (
+              <a href={resolveLinkUrl(link)} class:list={[buildButtonClasses(link?.appearance || 'default', link?.size || 'default'), 'mr-auto']}>
+                {link?.label}
+              </a>
+            )}
+          </div>
+          {imageUrl(images?.[2]) ? (
+            <img
+              src={imageUrl(images[2])}
+              alt={imageAlt(images[2])}
+              class="grow basis-0 rounded-xl object-cover md:w-1/2 lg:min-h-0 lg:w-auto"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div class="grow basis-0 rounded-xl bg-muted md:w-1/2 lg:min-h-0 lg:w-auto" />
+          )}
+        </div>
+      </div>
+
+      {(Array.isArray(logos) && logos.length > 0) && (
+        <div class="py-32">
+          <p class="text-center">Valued by clients worldwide</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-8">
+            {logos.map((logo: any) => (
+              <div class="flex items-center gap-3">
+                {imageUrl(logo) && <img src={imageUrl(logo)} alt={imageAlt(logo)} class="h-8 w-auto md:h-12" loading="lazy" />}
+                <p class="text-xl font-semibold md:text-2xl">{logo?.alt || logo?.filename || ''}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="bg-muted relative overflow-hidden rounded-xl p-10 md:p-16 mt-20">
+        <div class="flex flex-col gap-4 text-center md:text-left">
+          {nodes(text2).length > 0 && (
+            <RichTextLexical
+              nodes={nodes(text2)}
+              overrideStyle={{
+                h2: 'text-4xl font-semibold',
+                h3: 'text-2xl font-semibold',
+                h4: 'text-xl font-semibold',
+                p: 'max-w-screen-sm text-muted-foreground',
+              }}
+            />
+          )}
+        </div>
+        {Array.isArray(counter) && counter.length > 0 && (
+          <div class="mt-10 flex flex-wrap justify-between gap-10 text-center">
+            {counter.map((c: any) => (
+              <div class="flex flex-col gap-4">
+                <p>{c.title}</p>
+                <span class="text-4xl font-semibold md:text-5xl">{c.value}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <div class="pointer-events-none absolute -top-1 right-1 z-10 hidden size-full bg-[linear-gradient(to_right,hsl(from_var(--muted-foreground)_h_s_l)_1px,transparent_1px),linear-gradient(to_bottom,hsl(from_var(--muted-foreground)_h_s_l)_1px,transparent_1px)] mask-[linear-gradient(to_bottom_right,#000,transparent,transparent)] bg-size-[80px_80px] opacity-15 md:block"></div>
+      </div>
+    </div>
+  )
+}
+
+{/* ABOUT4 — centered headline + image strip + two text columns + CTA card */}
+{
+  variant === 'ABOUT4' && (
+    <div>
+      <div class="mx-auto flex max-w-screen-md flex-col gap-8 pb-28 text-center">
+        {nodes(headline).length > 0 && (
+          <RichTextLexical
+            nodes={nodes(headline)}
+            overrideStyle={{
+              h1: 'text-4xl font-semibold md:text-7xl',
+              h2: 'text-4xl font-semibold md:text-5xl',
+              h3: 'text-4xl font-semibold md:text-3xl',
+              p: 'text-xl font-medium text-muted-foreground',
+            }}
+          />
+        )}
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {[0, 1, 2].map((i) =>
+          imageUrl(images?.[i]) ? (
+            <img
+              src={imageUrl(images[i])}
+              alt={imageAlt(images[i])}
+              class="max-h-80 w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div class="h-72 w-full bg-muted" />
+          ),
+        )}
+      </div>
+
+      <div class="mx-auto grid max-w-screen-lg gap-28 py-28 md:grid-cols-2">
+        <div>
+          {nodes(text1).length > 0 && (
+            <RichTextLexical
+              nodes={nodes(text1)}
+              overrideStyle={{
+                h2: 'mb-5 text-4xl font-semibold',
+                h3: 'mb-5 text-2xl font-semibold',
+                h4: 'mb-5 text-xl font-semibold',
+                p: 'text-xl font-medium leading-8 text-muted-foreground',
+              }}
+            />
+          )}
+        </div>
+        <div>
+          {nodes(text2).length > 0 && (
+            <RichTextLexical
+              nodes={nodes(text2)}
+              overrideStyle={{
+                h2: 'mb-5 text-4xl font-semibold',
+                h3: 'mb-5 text-2xl font-semibold',
+                h4: 'mb-5 text-xl font-semibold',
+                p: 'text-xl font-medium leading-8 text-muted-foreground',
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+      <div class="bg-muted/50 mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-8 rounded-2xl p-14 text-center md:flex-row md:text-left">
+        <div>
+          {nodes(text3).length > 0 && (
+            <RichTextLexical
+              nodes={nodes(text3)}
+              overrideStyle={{
+                h3: 'text-3xl font-semibold',
+                h4: 'text-2xl font-semibold',
+                p: 'text-xl font-medium leading-8 text-muted-foreground',
+              }}
+            />
+          )}
+        </div>
+        {link && (
+          <a href={resolveLinkUrl(link)} class:list={[buildButtonClasses(link?.appearance || 'default', link?.size || 'default'), 'w-full md:w-fit']}>
+            {link?.label}
+          </a>
+        )}
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import BlockRenderer from '../components/blocks/BlockRenderer.astro'
+import RichTextLexical from '../components/blocks/richtext/RichTextLexical.astro'
+import { getPayloadFetch, getPage, getPost, getHeader, getFooter, getThemeConfig } from '../lib/payload'
+
+const runtime = Astro.locals.runtime
+const fetchFn = getPayloadFetch(runtime)
+const slug = Astro.params.slug || 'home'
+
+// Try page first, then post
+let doc = await getPage(fetchFn, slug, 2)
+let collection = 'pages'
+
+if (!doc) {
+  doc = await getPost(fetchFn, slug)
+  collection = 'posts'
+}
+
+if (!doc) {
+  return new Response('Not Found', { status: 404 })
+}
+
+const [header, footer, themeConfig] = await Promise.all([
+  getHeader(fetchFn),
+  getFooter(fetchFn),
+  getThemeConfig(fetchFn),
+])
+
+const layout = doc?.layout || []
+const hero = doc?.hero?.[0]
+---
+
+<Layout
+  title={doc?.meta?.title || doc?.title || 'Payblocks'}
+  description={doc?.meta?.description}
+  noIndex={doc?.meta?.noIndex}
+  themeConfig={themeConfig}
+>
+  <Header header={header} />
+
+  <main>
+    {
+      collection === 'posts' ? (
+        <article class="mx-auto max-w-3xl px-4 sm:px-6 py-16 md:py-24">
+          <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">{doc.title}</h1>
+          {doc.publishedAt && (
+            <p class="text-sm text-muted-foreground mb-8">
+              {new Date(doc.publishedAt).toLocaleDateString()}
+            </p>
+          )}
+          {doc.content?.root?.children?.length > 0 && (
+            <div class="prose prose-lg dark:prose-invert max-w-none">
+              <RichTextLexical nodes={doc.content.root.children} />
+            </div>
+          )}
+        </article>
+      ) : (
+        <>
+          {/* Hero */}
+          {hero && hero.designVersion !== 'none' && <BlockRenderer block={hero} />}
+
+          {/* Body blocks */}
+          {layout.map((block: any) => <BlockRenderer block={block} />)}
+        </>
+      )
+    }
+  </main>
+
+  <Footer footer={footer} />
+</Layout>

@@ -1,0 +1,87 @@
+---
+import { resolveLinkUrl } from '../lib/styles'
+
+const { header } = Astro.props
+const logo = header?.logo
+const items = header?.items || []
+const buttons = header?.buttons || []
+---
+
+<header class="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      {/* Logo */}
+      <a href="/" class="flex items-center gap-2">
+        {logo?.url ? (
+          <img src={logo.url} alt={logo.alt || 'Logo'} class="h-8 w-auto" loading="eager" />
+        ) : (
+          <span class="text-xl font-bold">Payblocks</span>
+        )}
+      </a>
+
+      {/* Nav */}
+      <nav class="hidden md:flex items-center gap-6">
+        {
+          items.map((item: any) => {
+            if (item.blockType === 'link') {
+              return (
+                <a
+                  href={resolveLinkUrl(item.link)}
+                  class="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+                >
+                  {item.link?.label}
+                </a>
+              )
+            }
+            if (item.blockType === 'sub') {
+              return (
+                <div class="relative group">
+                  <span class="text-sm font-medium text-foreground/80 hover:text-foreground cursor-pointer transition-colors">
+                    {item.label}
+                  </span>
+                  {item.subitems?.length > 0 && (
+                    <div class="absolute top-full left-0 mt-2 w-56 rounded-lg border bg-popover p-2 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                      {item.subitems.map((sub: any) => (
+                        <a
+                          href={resolveLinkUrl(sub.link)}
+                          class="block rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <span class="font-medium">{sub.link?.label}</span>
+                          {sub.Description && (
+                            <span class="block text-xs text-muted-foreground">{sub.Description}</span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            }
+            return null
+          })
+        }
+      </nav>
+
+      {/* Buttons */}
+      <div class="flex items-center gap-3">
+        {
+          buttons.map((btn: any) => (
+            <a
+              href={resolveLinkUrl(btn.link)}
+              class:list={[
+                'inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors',
+                btn.link?.appearance === 'outline'
+                  ? 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                  : btn.link?.appearance === 'ghost'
+                    ? 'hover:bg-accent hover:text-accent-foreground'
+                    : 'bg-primary text-primary-foreground hover:bg-primary/90',
+              ]}
+            >
+              {btn.link?.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</header>

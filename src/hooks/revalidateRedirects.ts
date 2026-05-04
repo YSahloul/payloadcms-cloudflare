@@ -1,11 +1,11 @@
 import type { CollectionAfterChangeHook } from 'payload'
 
-import { revalidateTag } from 'next/cache'
+import { purgePath } from '@/utilities/cachePurge'
+import { serverUrl } from '@/config/server'
 
-export const revalidateRedirects: CollectionAfterChangeHook = ({ doc, req: { payload } }) => {
-  payload.logger.info(`Revalidating redirects`)
-
-  revalidateTag('redirects')
-
-  return doc
+export const revalidateRedirects: CollectionAfterChangeHook = async ({ req: { payload } }) => {
+  payload.logger.info(`Purging redirects cache`)
+  // Purge homepage and common paths so the Astro middleware picks up new redirects
+  await purgePath(serverUrl, '/')
+  return undefined
 }

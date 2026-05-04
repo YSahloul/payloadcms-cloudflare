@@ -1,0 +1,16 @@
+---
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+
+const { content, style } = Astro.props
+const variant = style || 'info'
+const styles: Record<string, string> = {
+  info: 'border-blue-200 bg-blue-50 text-blue-900',
+  warning: 'border-yellow-200 bg-yellow-50 text-yellow-900',
+  error: 'border-red-200 bg-red-50 text-red-900',
+  success: 'border-green-200 bg-green-50 text-green-900',
+}
+---
+
+<div class={`rounded-md border px-4 py-3 ${styles[variant] || styles.info}`}>
+  <RichTextLexical nodes={content?.root?.children || []} />
+</div>

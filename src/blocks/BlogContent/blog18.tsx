@@ -36,7 +36,7 @@ const Blog18: React.FC<Post & { publicContext: PublicContextProps }> = (props) =
 
   const { title, content, meta, readTime, publishedAt, authors, publicContext } = props || {}
 
-  const author = getAuthorObject(authors?.[0])
+  const author = getAuthorObject(authors?.[0] as any)
   // Get side menu structure from content if it exists
   const sideMenuStructure = useMemo(() => {
     return content ? getSideMenuStructure(content, { headlineLevels: ['h2', 'h3'] }) : []

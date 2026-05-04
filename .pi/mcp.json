@@ -1,0 +1,22 @@
+{
+    "mcpServers": {
+        "work-cms": {
+            "url": "https://work-mcp.agenticflows.workers.dev/mcp",
+            "headers": {
+                "Authorization": "Bearer pi-work-superadmin-1777699331615"
+            },
+            "lifecycle": "lazy"
+        },
+        "dream-cms": {
+            "url": "https://dream-mcp.agenticflows.workers.dev/mcp",
+            "headers": {
+                "Authorization": "Bearer a010ec6f-c9c0-4444-a5fe-87decea4ae16"
+            },
+            "lifecycle": "lazy"
+        },
+        "image-mcp": {
+            "url": "https://image-mcp.agenticflows.workers.dev/mcp",
+            "lifecycle": "lazy"
+        }
+    }
+}

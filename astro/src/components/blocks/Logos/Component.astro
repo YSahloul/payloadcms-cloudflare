@@ -1,0 +1,151 @@
+---
+/**
+ * Logos Block — closer parity with original Payblocks LOGOS1 / LOGOS2 / LOGOS3.
+ * Source of truth:
+ *   - src/blocks/Logos/logos1.tsx
+ *   - src/blocks/Logos/logos2.tsx
+ *   - src/blocks/Logos/logos3.tsx
+ *
+ * Content only — wrapped by SectionShell.
+ */
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+import { resolveLinkUrl, resolveMediaUrl, buildButtonClasses } from '../../../lib/styles'
+
+const { designVersion, richText, link, logos } = Astro.props
+const variant = designVersion || 'LOGOS1'
+const nodes = richText?.root?.children || []
+const items = Array.isArray(logos) ? logos : []
+
+function logoUrl(logo: any) {
+  return logo && typeof logo === 'object' ? resolveMediaUrl(logo.url) : null
+}
+function logoAlt(logo: any) {
+  return logo && typeof logo === 'object' ? logo.alt || logo.filename || '' : ''
+}
+---
+
+{/* LOGOS1 — inline text and logo row */}
+{
+  variant === 'LOGOS1' && (
+    <div class="flex flex-wrap items-center justify-between gap-8">
+      {nodes.length > 0 && (
+        <RichTextLexical
+          nodes={nodes}
+          overrideStyle={{
+            p: 'text-lg leading-[140%] tracking-[-0.32px] text-primary',
+          }}
+        />
+      )}
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-6 opacity-70 grayscale lg:gap-[60px]">
+        {items.map((logo: any) =>
+          logoUrl(logo) ? (
+            <img src={logoUrl(logo)} alt={logoAlt(logo)} class="h-12 w-28 object-contain" loading="lazy" decoding="async" />
+          ) : null,
+        )}
+      </div>
+    </div>
+  )
+}
+
+{/* LOGOS2 — bordered split card, source parity target */}
+{
+  variant === 'LOGOS2' && (
+    <div class="border-border grid overflow-hidden rounded-xl border md:grid-cols-2">
+      <div class="my-auto px-6 py-10 sm:px-10 sm:py-12 lg:p-16">
+        <div class="w-full md:max-w-md">
+          {nodes.length > 0 && (
+            <RichTextLexical
+              nodes={nodes}
+              overrideStyle={{
+                h2: 'mb-4 text-2xl font-semibold lg:text-3xl',
+                h3: 'mb-4 text-2xl font-semibold lg:text-2xl',
+                h4: 'mb-4 text-2xl font-semibold lg:text-xl',
+                p: 'mb-6 text-lg',
+              }}
+            />
+          )}
+          {link?.label && (
+            <a
+              href={resolveLinkUrl(link)}
+              target={link?.newTab ? '_blank' : undefined}
+              rel={link?.newTab ? 'noopener noreferrer' : undefined}
+              class:list={[buildButtonClasses(link?.appearance || 'default', link?.size || 'default'), 'w-full md:w-fit']}
+            >
+              {link.label}
+            </a>
+          )}
+        </div>
+      </div>
+      <div class="border-border grid grid-cols-3 border-t md:border-t-0 md:border-l">
+        {items.map((logo: any, index: number) => (
+          <div class:list={['border-border -mb-px flex items-center justify-center border-r border-b p-5 sm:p-6', (index + 1) % 3 === 0 && 'border-r-0']}>
+            {logoUrl(logo) && (
+              <img
+                src={logoUrl(logo)}
+                alt={logoAlt(logo)}
+                class="size-12 object-contain object-center sm:size-16 lg:size-24"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+{/* LOGOS3 — centered copy and horizontal logo rail */}
+{
+  variant === 'LOGOS3' && (
+    <div>
+      <div class="flex flex-col items-center text-center">
+        {nodes.length > 0 && (
+          <RichTextLexical
+            nodes={nodes}
+            overrideStyle={{
+              h2: 'my-6 text-pretty text-2xl font-bold lg:text-4xl',
+              h3: 'my-6 text-pretty text-2xl font-bold lg:text-3xl',
+              h4: 'my-6 text-pretty text-2xl font-bold lg:text-2xl',
+              p: 'mb-6 text-lg',
+            }}
+          />
+        )}
+      </div>
+      <div class="pt-10 md:pt-16 lg:pt-20">
+        <div class="relative mx-auto flex items-center justify-center overflow-hidden lg:max-w-5xl">
+          <div class="flex w-max gap-10 px-12">
+            {[...items, ...items].map((logo: any) =>
+              logoUrl(logo) ? (
+                <div class="mx-10 flex shrink-0 items-center justify-center">
+                  <img src={logoUrl(logo)} alt={logoAlt(logo)} class="h-7 w-auto object-contain" loading="lazy" decoding="async" />
+                </div>
+              ) : null,
+            )}
+          </div>
+          <div class="from-background absolute inset-y-0 left-0 w-12 bg-linear-to-r to-transparent"></div>
+          <div class="from-background absolute inset-y-0 right-0 w-12 bg-linear-to-l to-transparent"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{/* LOGOS9 fallback until testimonial-specific port */}
+{
+  variant === 'LOGOS9' && (
+    <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+      {items.map((logo: any) =>
+        logoUrl(logo) ? (
+          <img
+            src={logoUrl(logo)}
+            alt={logoAlt(logo)}
+            class="h-8 opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-10"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : null,
+      )}
+    </div>
+  )
+}

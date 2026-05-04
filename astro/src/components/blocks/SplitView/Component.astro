@@ -1,0 +1,36 @@
+---
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+import { resolveLinkUrl, buildButtonClasses } from '../../../lib/styles'
+
+const { richText, image, links, layout } = Astro.props
+const hasRichText = richText?.root?.children?.length > 0
+const imageRight = layout === 'imageRight'
+---
+
+<div class:list={['grid gap-8 md:grid-cols-2 md:items-center', imageRight && 'md:[direction:rtl] [&>*]:md:[direction:ltr]']}>
+  <div>
+    {hasRichText && <RichTextLexical nodes={richText.root.children} />}
+    {links?.length > 0 && (
+      <div class="mt-6 flex flex-wrap gap-3">
+        {links.map((item: any, i: number) => (
+          <a
+            href={resolveLinkUrl(item.link)}
+            target={item.link?.newTab ? '_blank' : undefined}
+            rel={item.link?.newTab ? 'noopener noreferrer' : undefined}
+            class={buildButtonClasses(
+              i === 0 ? item.link?.appearance || 'primary' : item.link?.appearance || 'outline',
+              item.link?.size || 'default'
+            )}
+          >
+            {item.link?.label}
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+  {image?.url && (
+    <div class="rounded-xl overflow-hidden shadow-lg">
+      <img src={image.url} alt={image.alt || ''} class="w-full h-auto" loading="lazy" decoding="async" />
+    </div>
+  )}
+</div>

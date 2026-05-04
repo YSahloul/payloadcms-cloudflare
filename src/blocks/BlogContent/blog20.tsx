@@ -36,7 +36,7 @@ const Blog20: React.FC<Post & { publicContext: PublicContextProps }> = (props) =
     bannerImage,
   } = props || {}
 
-  const author = getAuthorObject(authors?.[0])
+  const author = getAuthorObject(authors?.[0] as any)
 
   const sideMenuStructure = content
     ? getSideMenuStructure(content, { headlineLevels: ['h2', 'h3'] })
@@ -130,7 +130,7 @@ const Blog20: React.FC<Post & { publicContext: PublicContextProps }> = (props) =
 
         <div className="relative mt-12 grid max-w-7xl gap-14 lg:mt-14 lg:grid lg:grid-cols-12 lg:gap-6">
           <div className="order-2 lg:order-none lg:col-span-8">
-            {bannerImage && typeof bannerImage !== 'string' && (
+            {bannerImage && typeof bannerImage === 'object' && 'alt' in bannerImage && (
               <div className="relative mb-8 aspect-video w-full overflow-hidden rounded-lg border">
                 <Media
                   resource={bannerImage}

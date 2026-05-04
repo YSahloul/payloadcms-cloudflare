@@ -1,0 +1,80 @@
+---
+import { resolveLinkUrl } from '../lib/styles'
+
+const { footer } = Astro.props
+const logo = footer?.logo
+const copyright = footer?.copyright
+const navItems = footer?.navItems || []
+const legalLinks = footer?.legalLinks || []
+const socialLinks = footer?.socialLinks || []
+---
+
+<footer class="border-t bg-muted">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <div class="grid gap-8 md:grid-cols-4">
+      {/* Logo + copyright */}
+      <div class="md:col-span-1">
+        {logo?.url ? (
+          <img src={logo.url} alt="Logo" class="h-8 w-auto mb-4" loading="lazy" />
+        ) : (
+          <span class="text-lg font-bold mb-4 block">Payblocks</span>
+        )}
+        {copyright && <p class="text-sm text-muted-foreground">{copyright}</p>}
+      </div>
+
+      {/* Nav columns */}
+      {
+        navItems.map((col: any) => (
+          <div>
+            <h3 class="text-sm font-semibold mb-3">{col.title}</h3>
+            <ul class="space-y-2">
+              {col.subNavItems?.map((item: any) => (
+                <li>
+                  <a
+                    href={resolveLinkUrl(item.link)}
+                    class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {item.link?.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* Bottom row */}
+    <div class="mt-12 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Legal links */}
+      <div class="flex flex-wrap gap-4">
+        {
+          legalLinks.map((item: any) => (
+            <a
+              href={resolveLinkUrl(item.link)}
+              class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {item.link?.label}
+            </a>
+          ))
+        }
+      </div>
+
+      {/* Social links */}
+      <div class="flex gap-4">
+        {
+          socialLinks.map((item: any) => (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {item.socialIcon || '🔗'}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>

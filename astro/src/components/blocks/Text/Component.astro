@@ -1,0 +1,15 @@
+---
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+import { proseContrastClass } from '../../../lib/styles'
+
+const { content, backgroundColor } = Astro.props
+const isLexical = content && typeof content === 'object' && content.root?.children
+const isHtml = typeof content === 'string'
+const proseContrast = proseContrastClass(backgroundColor)
+---
+
+<div class:list={['prose prose-lg max-w-none', proseContrast]}>
+  {isLexical && <RichTextLexical nodes={content.root.children} />}
+  {isHtml && <Fragment set:html={content} />}
+  {!isLexical && !isHtml && <p class="text-muted-foreground">No content</p>}
+</div>

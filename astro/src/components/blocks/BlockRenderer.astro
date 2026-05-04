@@ -1,0 +1,220 @@
+---
+/**
+ * BlockRenderer — dispatches CMS blocks to their Astro components.
+ *
+ * Pattern:
+ *   Layout.astro        → <html><body><Header/><main><slot/></main><Footer/>
+ *   pages/[...slug].astro → page.layout.map → <BlockRenderer />
+ *   BlockRenderer.astro  → <SectionShell> wraps each block
+ *   Block components     → render CONTENT ONLY (no <section>, no container)
+ */
+import SectionShell from './SectionShell.astro'
+import HeroBlock from './Hero/Component.astro'
+import CTABlock from './Cta/Component.astro'
+import TextBlock from './Text/Component.astro'
+import MediaBlock from './Media/Component.astro'
+import FeatureBlock from './Feature/Component.astro'
+import GalleryBlock from './Gallery/Component.astro'
+import LogosBlock from './Logos/Component.astro'
+import AboutBlock from './About/Component.astro'
+import TestimonialBlock from './Testimonial/Component.astro'
+import FaqBlock from './Faq/Component.astro'
+import StatBlock from './Stat/Component.astro'
+import SplitViewBlock from './SplitView/Component.astro'
+import ContactBlock from './Contact/Component.astro'
+import BlogBlock from './Blog/Component.astro'
+import BannerBlock from './Banner/Component.astro'
+import CasestudiesBlock from './Casestudies/Component.astro'
+import TimelineBlock from './Timeline/Component.astro'
+import ChangelogBlock from './Changelog/Component.astro'
+import CustomBlock from './CustomBlock/Component.astro'
+import LoginBlock from './Login/Component.astro'
+import SignupBlock from './Signup/Component.astro'
+import FormBlock from './Form/Component.astro'
+import CodeBlock from './Code/Component.astro'
+
+interface Props {
+  block: any
+}
+
+const { block } = Astro.props
+const type = block.blockType
+const bg = block.backgroundColor || null
+
+// Blocks that manage their own full-bleed layout (no SectionShell)
+const FULL_BLEED = new Set(['hero', 'banner', 'mediaBlock'])
+const needsShell = !FULL_BLEED.has(type)
+---
+
+{/* ── Full-bleed blocks ── */}
+{type === 'hero' && <HeroBlock {...block} />}
+{type === 'banner' && <BannerBlock {...block} />}
+
+{/* ── Wrapped blocks ── */}
+{
+  type === 'cta' && (
+    <SectionShell bg={bg}>
+      <CTABlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'text' && (
+    <SectionShell bg={bg}>
+      <TextBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'mediaBlock' && (
+    <SectionShell bg={bg} spacing="none">
+      <MediaBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'feature' && (
+    <SectionShell bg={bg}>
+      <FeatureBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'gallery' && (
+    <SectionShell bg={bg}>
+      <GalleryBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'logos' && (
+    <SectionShell bg={bg} defaultSpacing="compact">
+      <LogosBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'about' && (
+    <SectionShell bg={bg}>
+      <AboutBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'testimonial' && (
+    <SectionShell bg={bg}>
+      <TestimonialBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'faq' && (
+    <SectionShell bg={bg}>
+      <FaqBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'stat' && (
+    <SectionShell bg={bg}>
+      <StatBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'splitView' && (
+    <SectionShell bg={bg}>
+      <SplitViewBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'contact' && (
+    <SectionShell bg={bg}>
+      <ContactBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'blog' && (
+    <SectionShell bg={bg}>
+      <BlogBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'casestudies' && (
+    <SectionShell bg={bg}>
+      <CasestudiesBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'timeline' && (
+    <SectionShell bg={bg}>
+      <TimelineBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'changelog' && (
+    <SectionShell bg={bg}>
+      <ChangelogBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'customblock' && (
+    <SectionShell bg={bg}>
+      <CustomBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'login' && (
+    <SectionShell bg={bg}>
+      <LoginBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'signup' && (
+    <SectionShell bg={bg}>
+      <SignupBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'formBlock' && (
+    <SectionShell bg={bg}>
+      <FormBlock {...block} />
+    </SectionShell>
+  )
+}
+
+{
+  type === 'code' && (
+    <SectionShell bg={bg}>
+      <CodeBlock {...block} />
+    </SectionShell>
+  )
+}

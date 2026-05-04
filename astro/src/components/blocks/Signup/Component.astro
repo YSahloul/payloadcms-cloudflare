@@ -1,0 +1,20 @@
+---
+const { heading } = Astro.props
+---
+
+<div class="mx-auto max-w-sm">
+  {heading && <h2 class="text-2xl font-bold mb-6 text-center">{heading}</h2>}
+  <form action="/api/users" method="POST" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">Email</label>
+      <input type="email" name="email" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-1">Password</label>
+      <input type="password" name="password" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+    </div>
+    <button type="submit" class="w-full rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90">
+      Sign Up
+    </button>
+  </form>
+</div>

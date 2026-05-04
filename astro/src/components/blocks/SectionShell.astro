@@ -1,0 +1,45 @@
+---
+/**
+ * SectionShell — the ONE wrapper for all block content.
+ *
+ * Pattern: blocks render CONTENT ONLY. This handles:
+ *   - <section> element
+ *   - Background color + auto-contrast text
+ *   - Consistent max-width + horizontal padding
+ *   - Vertical spacing
+ */
+import { sectionSpacingClass, autoContrastText } from '../../lib/styles'
+
+interface Props {
+  bg?: string | null
+  spacing?: string | null
+  defaultSpacing?: string
+  class?: string
+  sectionClass?: string
+  id?: string
+  fullWidth?: boolean
+}
+
+const {
+  bg,
+  spacing,
+  defaultSpacing = 'default',
+  class: innerClass,
+  sectionClass,
+  id,
+  fullWidth = false,
+} = Astro.props
+
+const bgClass = bg && bg !== 'transparent' ? `bg-${bg}` : ''
+const textClass = autoContrastText(bg)
+const spacingClass = sectionSpacingClass(spacing, defaultSpacing)
+const containerClass = fullWidth
+  ? 'mx-auto px-4 sm:px-6 lg:px-8'
+  : 'mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'
+---
+
+<section class:list={[bgClass, textClass, sectionClass]} id={id}>
+  <div class:list={[containerClass, spacingClass, innerClass]}>
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,9 @@
+---
+const { code, language } = Astro.props
+---
+
+{code && (
+  <pre class="rounded-lg bg-muted p-4 overflow-x-auto text-sm">
+    <code>{code}</code>
+  </pre>
+)}

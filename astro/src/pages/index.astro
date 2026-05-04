@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import BlockRenderer from '../components/blocks/BlockRenderer.astro'
+import { getPayloadFetch, getPage, getHeader, getFooter, getThemeConfig } from '../lib/payload'
+
+const runtime = Astro.locals.runtime
+const fetchFn = getPayloadFetch(runtime)
+
+const [page, header, footer, themeConfig] = await Promise.all([
+  getPage(fetchFn, 'home', 2),
+  getHeader(fetchFn),
+  getFooter(fetchFn),
+  getThemeConfig(fetchFn),
+])
+
+const layout = page?.layout || []
+const hero = page?.hero
+---
+
+<Layout
+  title={page?.meta?.title || page?.title || 'Payblocks'}
+  description={page?.meta?.description}
+  noIndex={page?.meta?.noIndex}
+  themeConfig={themeConfig}
+>
+  <Header header={header} />
+
+  <main>
+    {/* Hero */}
+    {hero && hero.designVersion !== 'none' && <BlockRenderer block={{ ...hero, blockType: 'hero' }} />}
+
+    {/* Body blocks */}
+    {layout.map((block: any) => <BlockRenderer block={block} />)}
+  </main>
+
+  <Footer footer={footer} />
+</Layout>

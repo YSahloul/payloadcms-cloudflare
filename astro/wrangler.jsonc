@@ -1,0 +1,23 @@
+{
+  "name": "payblocks-site",
+  "main": "dist/_worker.js/index.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "PAYLOAD_CMS",
+      "service": "payblocks-cms"
+    }
+  ],
+  "images": { "binding": "IMAGES" },
+  "vars": {
+    "PAYLOAD_API_URL": "https://payblocks-cms.agenticflows.workers.dev"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -21,7 +21,7 @@ export async function getDb() {
   if (payload.db.name !== 'mongoose') {
     throw new Error('Backup failed: Not a mongoose database adapter')
   }
-  const db = payload.db.connection.db
+  const db = (payload.db as any).connection.db
   if (!db) {
     console.error('Backup failed: Database not initialized')
     throw new Error('Backup failed: Database not initialized')

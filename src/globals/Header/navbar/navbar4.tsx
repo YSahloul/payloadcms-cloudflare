@@ -15,7 +15,6 @@ import {
 import { Media } from '@/components/Media'
 import { CMSLink } from '@/components/Link'
 import { Icon } from '@/components/Icon'
-import { SearchButton } from '@/search/Component'
 import { PublicContextProps } from '@/utilities/publicContextProps'
 import { BlockRenderer } from './blocks'
 
@@ -76,13 +75,7 @@ const Navbar4: React.FC<{ header: HeaderType; publicContext: PublicContextProps 
                   className="hidden items-center justify-center md:inline-flex"
                 />
               ))}
-              {header.isSearchEnabled && (
-                <SearchButton
-                  className="mr-0 ml-auto block lg:hidden"
-                  variant="ghost"
-                  publicContext={publicContext}
-                />
-              )}
+              
               <Button
                 variant="ghost"
                 size="icon"
@@ -101,10 +94,7 @@ const Navbar4: React.FC<{ header: HeaderType; publicContext: PublicContextProps 
                 {open && <X className="size-4" />}
               </Button>
             </div>
-            {/* Search Button */}
-            {header.isSearchEnabled && (
-              <SearchButton className="hidden lg:block" publicContext={publicContext} />
-            )}
+            
           </div>
 
           {/* Mobile Menu */}

@@ -1,0 +1,129 @@
+---
+/**
+ * Feature Block — closer parity with original Payblocks FEATURE1.
+ * Source of truth:
+ *   - src/blocks/Feature/feature1.tsx
+ *
+ * Content only — wrapped by SectionShell.
+ */
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+import { resolveLinkUrl, buildButtonClasses } from '../../../lib/styles'
+
+const { richText, image, links, icon, designVersion } = Astro.props
+const variant = designVersion || 'FEATURE1'
+const nodes = richText?.root?.children || []
+---
+
+{/* FEATURE1 — original icon + copy + buttons + image grid */}
+{
+  (variant === 'FEATURE1' || !variant) && (
+    <div class="grid items-center gap-8 lg:grid-cols-2">
+      <div class="flex flex-col items-center text-center lg:items-start lg:text-left">
+        <span class="bg-accent flex size-12 items-center justify-center rounded-full text-xl">
+          {icon || '✦'}
+        </span>
+
+        {nodes.length > 0 && (
+          <RichTextLexical
+            nodes={nodes}
+            overrideStyle={{
+              h1: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              h2: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              h3: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              p: 'mb-8 max-w-xl text-muted-foreground lg:text-lg',
+            }}
+          />
+        )}
+
+        {Array.isArray(links) && links.length > 0 && (
+          <div class="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
+            {links.map(({ link }: any, i: number) => (
+              <a
+                href={resolveLinkUrl(link)}
+                target={link?.newTab ? '_blank' : undefined}
+                rel={link?.newTab ? 'noopener noreferrer' : undefined}
+                class:list={[
+                  buildButtonClasses(link?.appearance || (i === 0 ? 'default' : 'outline'), 'lg'),
+                  'w-full sm:w-auto',
+                ]}
+              >
+                {link?.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {image?.url ? (
+        <img
+          src={image.url}
+          alt={image.alt || ''}
+          class="max-h-96 w-full rounded-md object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="max-h-96 min-h-80 w-full rounded-md border bg-accent/60 shadow-inner">
+          <div class="flex h-80 items-center justify-center text-muted-foreground">
+            <div class="text-center">
+              <div class="mx-auto mb-4 size-16 rounded-2xl bg-background shadow-sm"></div>
+              <p class="text-sm">Feature media</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+{/* Fallback for other enabled FEATURE variants until each is ported individually. */}
+{
+  variant !== 'FEATURE1' && (
+    <div class="grid items-center gap-8 lg:grid-cols-2">
+      <div class="flex flex-col items-center text-center lg:items-start lg:text-left">
+        <span class="bg-accent flex size-12 items-center justify-center rounded-full text-xl">
+          {icon || '✦'}
+        </span>
+        {nodes.length > 0 && (
+          <RichTextLexical
+            nodes={nodes}
+            overrideStyle={{
+              h1: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              h2: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              h3: 'my-6 text-pretty text-3xl font-bold lg:text-4xl',
+              p: 'mb-8 max-w-xl text-muted-foreground lg:text-lg',
+            }}
+          />
+        )}
+        {Array.isArray(links) && links.length > 0 && (
+          <div class="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
+            {links.map(({ link }: any, i: number) => (
+              <a
+                href={resolveLinkUrl(link)}
+                target={link?.newTab ? '_blank' : undefined}
+                rel={link?.newTab ? 'noopener noreferrer' : undefined}
+                class:list={[
+                  buildButtonClasses(link?.appearance || (i === 0 ? 'default' : 'outline'), 'lg'),
+                  'w-full sm:w-auto',
+                ]}
+              >
+                {link?.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      {image?.url ? (
+        <img
+          src={image.url}
+          alt={image.alt || ''}
+          class="max-h-96 w-full rounded-md object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="max-h-96 min-h-80 w-full rounded-md border bg-accent/60 shadow-inner" />
+      )}
+    </div>
+  )
+}

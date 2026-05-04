@@ -1,75 +1,80 @@
-// storage-adapter-import-placeholder
-// import { postgresAdapter } from '@payloadcms/db-postgres'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import fs from 'fs'
+import path from 'path'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+import { migrations } from './migrations'
+import { r2Storage } from '@payloadcms/storage-r2'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { buildConfig, PayloadRequest } from 'payload'
+import { fileURLToPath } from 'url'
+import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
+import { GetPlatformProxyOptions } from 'wrangler'
 import { en } from '@payloadcms/translations/languages/en'
 import { de } from '@payloadcms/translations/languages/de'
 
-import { OAuth2Plugin } from 'payload-oauth2'
-
+// Plugins
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
-import { searchPlugin } from '@payloadcms/plugin-search'
 import { resendAdapter } from '@payloadcms/email-resend'
-import {
-  BoldFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  ItalicFeature,
-  LinkFeature,
-  lexicalEditor,
-  UnderlineFeature,
-  ParagraphFeature,
-  TextStateFeature,
-  defaultColors,
-} from '@payloadcms/richtext-lexical'
-import sharp from 'sharp' // editor-import
-import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
-import { fileURLToPath } from 'url'
 
+// Collections
 import Categories from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
 import Roles from './collections/Roles'
+
+// Globals
 import { Footer } from './globals/Footer/config'
 import { Header } from './globals/Header/config'
 import { ThemeConfig } from './globals/ThemeConfig/config'
-import { revalidateRedirects } from './hooks/revalidateRedirects'
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { Page, Post } from 'src/payload-types'
-
-import { searchFields } from '@/search/fieldOverrides'
-import { beforeSyncWithSearch } from '@/search/beforeSync'
-import { serverUrl as NEXT_PUBLIC_SERVER_URL } from '@/config/server'
-import localization from './localization.config'
-import { initializeRoles } from './utilities/initRoles'
-import { isAdminHidden } from './access/isAdmin'
-import { hasPermission } from './utilities/checkPermission'
 import { PageConfig } from './globals/PageConfig/config'
-import { Telephone } from './fields/formBuilder/telephone'
+
+// Hooks / Utils
+import { revalidateRedirects } from './hooks/revalidateRedirects'
+import { initializeRoles } from './utilities/initRoles'
+import { hasPermission } from './utilities/checkPermission'
+import localization from './localization.config'
+import { serverUrl as NEXT_PUBLIC_SERVER_URL } from '@/config/server'
+
+import { OAuth2Plugin } from 'payload-oauth2'
+import type { Config } from './payload-types'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payblocks Website Template` : 'Payblocks Website Template'
+const isCLI = process.argv.some((value) => {
+  const resolved = realpath(value)
+  return (
+    resolved?.endsWith(path.join('payload', 'bin.js')) ||
+    resolved?.includes('payload-graphql') ||
+    resolved?.includes('@payloadcms/graphql')
+  )
+})
+const isProduction = process.env.NODE_ENV === 'production'
+const isNextBuild =
+  process.env.NEXT_PHASE === 'phase-production-build' ||
+  process.env.npm_lifecycle_event === 'build'
+
+const cloudflare: any = isNextBuild
+  ? { env: process.env }
+  : isCLI || !isProduction
+    ? await getCloudflareContextFromWrangler()
+    : await getCloudflareContext({ async: true })
+
+const generateTitle = ({ doc }: any) => {
+  return doc?.title ? `${doc.title} | Payblocks` : 'Payblocks'
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
-  // TODO: add multi slug
-  return doc?.slug ? `${NEXT_PUBLIC_SERVER_URL!}/${doc.slug}` : NEXT_PUBLIC_SERVER_URL!
+const generateURL = ({ doc }: any) => {
+  return doc?.slug ? `${NEXT_PUBLIC_SERVER_URL}/${doc.slug}` : NEXT_PUBLIC_SERVER_URL
 }
 
-/**
- * Only show the google login button if the client id and secret are set
- */
 const googleAuthActive = !!(
-  process.env.GOOGLE_LOGIN_CLIENT_ID && process.env.GOOGLE_LOGIN_CLIENT_SECRET
+  cloudflare.env.GOOGLE_LOGIN_CLIENT_ID && cloudflare.env.GOOGLE_LOGIN_CLIENT_SECRET
 )
 
 export default buildConfig({
@@ -90,106 +95,40 @@ export default buildConfig({
     user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
-  // This config helps us configure global or default features that the other editors can inherit
-  editor: lexicalEditor({
-    features: () => {
-      return [
-        HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-        FixedToolbarFeature(),
-        UnderlineFeature(),
-        BoldFeature(),
-        ItalicFeature(),
-        ParagraphFeature(),
-        LinkFeature({
-          enabledCollections: ['pages', 'posts'],
-          fields: ({ defaultFields }) => {
-            const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
-              if ('name' in field && field.name === 'url') return false
-              return true
-            })
-
-            return [
-              ...defaultFieldsWithoutUrl,
-              {
-                name: 'url',
-                type: 'text',
-                admin: {
-                  condition: (_, siblingData) => siblingData.linkType !== 'internal',
-                },
-                label: ({ t }) => t('fields:enterURL'),
-                required: true,
-              },
-            ]
-          },
-        }),
-
-        TextStateFeature({
-          state: {
-            color: {
-              'text-grey': {
-                label: 'Grey',
-
-                css: {
-                  color: 'hsl(0, 0%, 41%)',
-                },
-              },
-              ...defaultColors.text,
-            },
-          },
-        }),
-      ]
-    },
-  }),
-  db: mongooseAdapter({
-    url: process.env.MONGODB_URI || '',
+  editor: lexicalEditor(),
+  db: sqliteD1Adapter({
+    binding: (cloudflare.env?.D1 || {}) as any,
+    prodMigrations: migrations as any,
   }),
   collections: [Pages, Posts, Media, Categories, Users, Roles],
-  cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   globals: [ThemeConfig, Header, Footer, PageConfig],
+  cors: [NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  csrf: [NEXT_PUBLIC_SERVER_URL || ''].filter(Boolean),
   plugins: [
     redirectsPlugin({
       collections: ['pages', 'posts'],
       overrides: {
-        // @ts-expect-error Type mismatch between redirects plugin field types and our runtime shape
-        fields: ({ defaultFields }) => {
-          return defaultFields.map((field) => {
+        fields: (({ defaultFields }: any) => {
+          return defaultFields.map((field: any) => {
             if ('name' in field && field.name === 'from') {
               return {
                 ...field,
                 admin: {
                   description:
-                    'Add new redirects here. The redirect will work immediately after saving. For example: /about or https://example.com/about',
+                    'Add redirects here. They work immediately after saving. Example: /about or https://example.com/about',
                 },
               }
             }
             return field
           })
-        },
-        hooks: {
-          afterChange: [revalidateRedirects],
-        },
+        }) as any,
+        hooks: { afterChange: [revalidateRedirects] },
         access: {
           create: hasPermission('canManageRedirects'),
           read: () => true,
@@ -200,19 +139,11 @@ export default buildConfig({
     }),
     nestedDocsPlugin({
       collections: ['categories', 'pages'],
-      // This function is executed on save of the page. If you change this function make
-      // sure to re-save all pages to update there URLs
-      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${(doc as any).slug}`, ''),
     }),
-    seoPlugin({
-      generateTitle,
-      generateURL,
-    }),
+    seoPlugin({ generateTitle, generateURL }),
     formBuilderPlugin({
-      fields: {
-        payment: false,
-        telephone: Telephone,
-      },
+      fields: { payment: false },
       formOverrides: {
         fields: ({ defaultFields }) => {
           return defaultFields.map((field) => {
@@ -220,13 +151,9 @@ export default buildConfig({
               return {
                 ...field,
                 editor: lexicalEditor({
-                  features: ({ rootFeatures }) => {
-                    return [
-                      ...rootFeatures,
-                      FixedToolbarFeature(),
-                      HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    ]
-                  },
+                  features: ({ rootFeatures }) => [
+                    ...rootFeatures,
+                  ],
                 }),
               }
             }
@@ -234,32 +161,10 @@ export default buildConfig({
           })
         },
       },
-      formSubmissionOverrides: {
-        admin: {
-          description: {
-            de: 'Formularübermittlungen, die von Formularen im Frontend gesammelt wurden',
-            en: 'Form submissions that got collected by forms in the frontend',
-          },
-        },
-      },
     }),
-    searchPlugin({
-      collections: ['pages', 'posts'],
-      beforeSync: beforeSyncWithSearch,
-      searchOverrides: {
-        admin: {
-          hidden: isAdminHidden,
-        },
-        fields: ({ defaultFields }) => {
-          return [...defaultFields, ...searchFields]
-        },
-      },
-    }),
-    vercelBlobStorage({
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    r2Storage({
+      bucket: (cloudflare.env?.R2 || {}) as any,
+      collections: { media: true },
     }),
     OAuth2Plugin({
       enabled: googleAuthActive,
@@ -267,9 +172,9 @@ export default buildConfig({
       useEmailAsIdentity: true,
       serverURL: NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
       authCollection: 'users',
-      clientId: process.env.GOOGLE_LOGIN_CLIENT_ID || '',
+      clientId: cloudflare.env.GOOGLE_LOGIN_CLIENT_ID || '',
       subFieldName: 'sub',
-      clientSecret: process.env.GOOGLE_LOGIN_CLIENT_SECRET || '',
+      clientSecret: cloudflare.env.GOOGLE_LOGIN_CLIENT_SECRET || '',
       tokenEndpoint: 'https://oauth2.googleapis.com/token',
       scopes: [
         'https://www.googleapis.com/auth/userinfo.email',
@@ -282,26 +187,14 @@ export default buildConfig({
           headers: { Authorization: `Bearer ${accessToken}` },
         })
         const user = await response.json()
-        if (!user.email_verified) {
-          throw new Error('Email not verified')
-        }
-        /**
-         * Set your own allowed email domains here if needed to limit access
-         * to payload for specific email domains
-         */
-        const allowedDomains = process.env.ALLOWED_EMAIL_DOMAINS?.split(',')
+        if (!user.email_verified) throw new Error('Email not verified')
+        const allowedDomains = cloudflare.env.ALLOWED_EMAIL_DOMAINS?.split(',')
         if (allowedDomains && !allowedDomains.includes(user.email.split('@')?.[1])) {
           throw new Error('Email domain not allowed')
         }
-
-        return {
-          email: user.email,
-          sub: user.sub,
-          name: user.name,
-        }
+        return { email: user.email, sub: user.sub, name: user.name }
       },
       successRedirect: (req: PayloadRequest) => {
-        // redirect to state
         if (req.query.state && (req.query.state as string).startsWith('/')) {
           return `${req.query.state}`
         }
@@ -313,29 +206,31 @@ export default buildConfig({
       },
     }),
   ],
-  /**
-   * Use the Resend adapter or switch to your own email service here: https://payloadcms.com/docs/email/overview
-   */
   email: resendAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS!,
-    defaultFromName: 'Payblocks Website',
-    apiKey: process.env.RESEND_API_KEY || '',
+    defaultFromAddress: cloudflare.env.EMAIL_FROM_ADDRESS || 'hello@payblocks.dev',
+    defaultFromName: 'Payblocks',
+    apiKey: cloudflare.env.RESEND_API_KEY || '',
   }),
-  secret: process.env.PAYLOAD_SECRET!,
-  sharp,
+  secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   onInit: async (payload) => {
-    /**
-     * Add the default roles if needed on system startup
-     */
     await initializeRoles(payload)
   },
-  // Enable localization for the website
   localization,
-  // Enable localization for admin panel
   i18n: {
     supportedLanguages: { en, de },
   },
 })
+
+// Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
+function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
+    ({ getPlatformProxy }) =>
+      getPlatformProxy({
+        environment: process.env.CLOUDFLARE_ENV,
+        remoteBindings: false,
+      } satisfies GetPlatformProxyOptions),
+  )
+}

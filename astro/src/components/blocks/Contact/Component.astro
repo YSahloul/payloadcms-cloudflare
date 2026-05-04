@@ -1,0 +1,25 @@
+---
+import RichTextLexical from '../richtext/RichTextLexical.astro'
+
+const { richText, email, phone, address } = Astro.props
+const hasRichText = richText?.root?.children?.length > 0
+---
+
+<div class="mx-auto max-w-xl">
+  {hasRichText && <RichTextLexical nodes={richText.root.children} />}
+  <div class="mt-6 space-y-3 text-sm">
+    {email && (
+      <p>
+        Email:{" "}
+        <a href={`mailto:${email}`} class="text-primary hover:underline">{email}</a>
+      </p>
+    )}
+    {phone && (
+      <p>
+        Phone:{" "}
+        <a href={`tel:${phone}`} class="text-primary hover:underline">{phone}</a>
+      </p>
+    )}
+    {address && <p class="text-muted-foreground whitespace-pre-line">{address}</p>}
+  </div>
+</div>
